@@ -29,3 +29,9 @@
 ## TailwindCSS
 
 - 인라인 스타일 사용 금지, Tailwind 클래스 우선
+
+## Konsta UI
+
+- Konsta 컴포넌트를 우선 사용하고, 없는 경우에만 직접 구현
+- `App` 래퍼로 전체를 감싸야 테마 적용됨
+- Tailwind와 혼용 가능하지만 Konsta 컴포넌트 내부 스타일은 건드리지 않기
