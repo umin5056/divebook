@@ -12,7 +12,7 @@ export default function AuthCallbackPage() {
     if (accessToken && refreshToken) {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      navigate("/", { replace: true });
+      navigate("/lesson", { replace: true });
     } else {
       navigate("/", { replace: true });
     }
