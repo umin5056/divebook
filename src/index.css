@@ -1,5 +1,27 @@
 @import "tailwindcss";
+/* import Konsta UI theme */
+@import "konsta/react/theme.css";
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
 
+html,
+body,
 #root {
-  height: 100vh;
+  height: 100svh;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.k-app {
+  min-height: 0 !important;
+  height: 100%;
+}
+
+.k-toolbar > div {
+  width: 100%;
+}
+
+.k-navbar-bg-gradient {
+  background: none !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }

@@ -1,25 +1,37 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { bottomNavItems as navItems } from "../constants/navItems";
+import { Toolbar, ToolbarPane, Link } from "konsta/react";
+import { CalendarDays, UserSearch } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+const tabs = [
+  { path: "/lesson", icon: CalendarDays, label: "강습" },
+  { path: "/crew", icon: UserSearch, label: "크루" },
+];
 
 const BottomNav = () => {
-  const [activeNav, setActiveNav] = useState("Dashboard");
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const activeIndex = tabs.findIndex((tab) => pathname.includes(tab.path));
 
   return (
-    <div className="w-full bg-white border-t border-gray-200">
-      <nav className="flex justify-around">
-        {navItems.map(({ id, icon: Icon, href }) => (
+    <Toolbar top className="py-3 backdrop-blur-[2px]">
+      <ToolbarPane className="w-full">
+        <div
+          className="absolute top-1 bottom-1 w-1/2 rounded-[inherit] bg-[#fff] shadow-ios-light-glass backdrop-blur-lg transition-transform duration-300"
+          style={{ transform: `translateX(${activeIndex * 100}%)` }}
+        />
+        {tabs.map(({ path, icon: Icon, label }) => (
           <Link
-            key={id}
-            to={href}
-            onClick={() => setActiveNav(id)}
-            className={`pt-5 mb-6 pb-2 px-2 ${activeNav === id ? "text-blue-700 border-b-2" : "text-gray-500"}`}
+            key={path}
+            className={`relative z-10 flex-1 font-bold transition-colors duration-300 ${pathname.includes(path) ? "" : "text-gray-400"}`}
+            onClick={() => navigate(path)}
           >
-            <Icon size={25} />
+            <Icon />
+            {label}
           </Link>
         ))}
-      </nav>
-    </div>
+      </ToolbarPane>
+    </Toolbar>
   );
 };
 
