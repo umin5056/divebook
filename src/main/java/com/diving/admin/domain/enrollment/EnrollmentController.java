@@ -1,13 +1,24 @@
 package com.diving.admin.domain.enrollment;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/lessons")
+@RequestMapping("/api/enrollments")
 @RequiredArgsConstructor
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
+
+    @PatchMapping("/{enrollmentId}/payment-status")
+    public ResponseEntity<Void> updatePaymentStatus(
+            @PathVariable String enrollmentId,
+            @RequestBody PaymentStatusRequest request
+    ) {
+        enrollmentService.updatePaymentStatus(enrollmentId, request.paymentStatus());
+        return ResponseEntity.noContent().build();
+    }
+
+    public record PaymentStatusRequest(PaymentStatus paymentStatus) {}
 }

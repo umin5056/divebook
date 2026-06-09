@@ -31,4 +31,9 @@ public class Enrollment {
 
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
+
+    public void updatePaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+        this.modifiedAt = java.time.LocalDateTime.now();
+    }
 }

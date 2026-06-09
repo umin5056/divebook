@@ -29,7 +29,7 @@ public class Student {
     private String email;
 
     @Column(columnDefinition = "TEXT")
-    private String memo;
+    private String content;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
