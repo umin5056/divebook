@@ -3,7 +3,6 @@ import { Layout } from "./components/Layout";
 import LoginPage from "./pages/login/LoginPage";
 import AuthCallbackPage from "./pages/login/AuthCallbackPage";
 import LessonPage from "./pages/lesson/LessonPage";
-import AddLessonPage from "./pages/lesson/AddLessonPage";
 import CrewPage from "./pages/crew/CrewPage";
 
 export default function App() {
@@ -14,7 +13,6 @@ export default function App() {
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route element={<Layout />}>
           <Route path="/lesson" element={<LessonPage />} />
-          <Route path="/lesson/add" element={<AddLessonPage />} />
           <Route path="/crew" element={<CrewPage />} />
         </Route>
       </Routes>

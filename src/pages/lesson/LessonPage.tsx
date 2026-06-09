@@ -1,15 +1,12 @@
-import { useState } from "react";
-import {
-  Searchbar,
-  Card,
-  Fab,
-  Popover,
-  List,
-  ListItem,
-  Link,
-} from "konsta/react";
+import { useEffect, useState } from "react";
+import { useLessons } from "../../hooks/useLessons";
+import { Searchbar, Fab, Popover, List, ListItem, Link } from "konsta/react";
 import { Plus } from "lucide-react";
-import AddLessonPage from "./AddLessonPage";
+import LessonAddSheet from "./LessonAddSheet";
+import LessonDetailSheet from "./LessonDetailSheet";
+import LessonCard from "../../components/LessonCard";
+import type { LessonResponse } from "../../api/lesson";
+import { updateLesson, lessonToUpdateRequest } from "../../api/lesson";
 
 const STATUS_OPTIONS = [
   { label: "전체", value: "all" },
@@ -18,35 +15,36 @@ const STATUS_OPTIONS = [
   { label: "취소", value: "cancelled" },
 ];
 
-const items = [
-  { title: "FC Ajax" },
-  { title: "FC Arsenal" },
-  { title: "FC Athletic" },
-  { title: "FC Barcelona" },
-  { title: "FC Bayern München" },
-  { title: "FC Bordeaux" },
-  { title: "FC Borussia Dortmund" },
-  { title: "FC Chelsea" },
-  { title: "FC Galatasaray" },
-  { title: "FC Juventus" },
-  { title: "FC Liverpool" },
-  { title: "FC Manchester City" },
-  { title: "FC Manchester United" },
-  { title: "FC Paris Saint-Germain" },
-  { title: "FC Real Madrid" },
-  { title: "FC Tottenham Hotspur" },
-  { title: "FC Valencia" },
-  { title: "FC West Ham United" },
-];
-
 export default function LessonPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusOption, setStatusOption] = useState(STATUS_OPTIONS[0]);
   const [statusOptionOpened, setStatusOptionOpened] = useState(false);
   const [addSheetOpened, setAddSheetOpened] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState<LessonResponse | null>(
+    null,
+  );
+  const { data: lessons, refetch } = useLessons();
+
+  useEffect(() => {
+    refetch();
+  }, [addSheetOpened, refetch]);
+
+  const filteredLessons = lessons?.filter((lesson) => {
+    const matchesStatus =
+      statusOption.value === "all" || lesson.status === statusOption.value;
+    const matchesSearch =
+      lesson.title.includes(searchQuery) ||
+      lesson.location.includes(searchQuery);
+    return matchesStatus && matchesSearch;
+  });
+
+  const handleCancel = async (lesson: LessonResponse) => {
+    await updateLesson(lesson.lessonId, lessonToUpdateRequest(lesson, "cancelled"));
+    refetch();
+  };
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex gap-2 px-4">
         <Searchbar
           onInput={(e) => setSearchQuery(e.target.value)}
@@ -82,15 +80,24 @@ export default function LessonPage() {
         </List>
       </Popover>
 
-      {items.map((el) => (
-        <Card key={el.title}>
-          <div>{el.title}</div>
-        </Card>
+      {filteredLessons?.map((lesson) => (
+        <LessonCard
+          key={lesson.lessonId}
+          lesson={lesson}
+          onCancel={handleCancel}
+          onPress={setSelectedLesson}
+        />
       ))}
 
-      <AddLessonPage
+      <LessonAddSheet
         opened={addSheetOpened}
         onClose={() => setAddSheetOpened(false)}
+      />
+
+      <LessonDetailSheet
+        lesson={selectedLesson}
+        onClose={() => setSelectedLesson(null)}
+        onUpdated={refetch}
       />
 
       <Fab
