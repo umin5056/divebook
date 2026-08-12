@@ -20,14 +20,13 @@ const BottomNav = () => {
           className="absolute top-1 bottom-1 w-1/2 rounded-[inherit] bg-[#fff] shadow-ios-light-glass backdrop-blur-lg transition-transform duration-300"
           style={{ transform: `translateX(${activeIndex * 100}%)` }}
         />
-        {tabs.map(({ path, icon: Icon, label }) => (
+        {tabs.map(({ path, icon: Icon }) => (
           <Link
             key={path}
             className={`relative z-10 flex-1 font-bold transition-colors duration-300 ${pathname.includes(path) ? "" : "text-gray-400"}`}
             onClick={() => navigate(path)}
           >
             <Icon />
-            {label}
           </Link>
         ))}
       </ToolbarPane>

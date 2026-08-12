@@ -16,7 +16,7 @@ public class AuthController {
         authService.sendCode(request.email());
         return ResponseEntity.ok().build();
     }
-
+    
     @PostMapping("/email/verify")
     public ResponseEntity<LoginResponse> verify(@RequestBody EmailVerifyRequest request) {
         return ResponseEntity.ok(authService.verifyAndLogin(request.email(), request.code()));

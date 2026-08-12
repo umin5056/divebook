@@ -3,6 +3,7 @@ package com.diving.admin.domain.auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,12 @@ public class EmailVerificationService {
 
     private String generateCode() {
         return String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+    }
+
+    @Scheduled(fixedRate = 60_000)
+    void removeExpiredCodes() {
+        LocalDateTime now = LocalDateTime.now();
+        codeStore.values().removeIf(code -> code.expiresAt().isBefore(now));
     }
 
     private record VerificationCode(String code, LocalDateTime expiresAt) {}

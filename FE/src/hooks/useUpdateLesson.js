@@ -5,8 +5,15 @@ export function useUpdateLesson() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ lessonId, data }) => updateLesson(lessonId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["lessons"] });
+    onSuccess: (res) => {
+      // queryClient.invalidateQueries({ queryKey: ["lessons"] });
+      queryClient.setQueryData(["lessons"], (old) =>
+        old
+          ? old.map((lesson) =>
+              lesson.lessonId === res.data.lessonId ? res.data : lesson,
+            )
+          : old,
+      );
     },
   });
 }
