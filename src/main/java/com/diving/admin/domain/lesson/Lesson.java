@@ -18,10 +18,10 @@ public class Lesson {
 
     @Id
     @UuidGenerator
-    @Column(name = "lesson_id", length = 36)
+    @Column(length = 36)
     private String lessonId;
 
-    @Column(name = "instructor_id", nullable = false, length = 36)
+    @Column(nullable = false, length = 36)
     private String instructorId;
 
     @Column(nullable = false, length = 100)

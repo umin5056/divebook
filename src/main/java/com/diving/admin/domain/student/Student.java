@@ -13,11 +13,11 @@ public class Student {
 
     @Id
     @UuidGenerator
-    @Column(name = "student_id", length = 36)
+    @Column(length = 36)
     private String studentId;
 
-    @Column(name = "crew_id", nullable = false, length = 36)
-    private String crewId;
+    @Column(nullable = false, length = 36)
+    private String instructorId;
 
     @Column(nullable = false, unique = true, length = 20)
     private String phone;
@@ -30,6 +30,9 @@ public class Student {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    @Column(nullable=false, length=1)
+    private String deleted;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

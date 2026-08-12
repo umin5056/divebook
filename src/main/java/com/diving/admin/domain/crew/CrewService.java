@@ -8,4 +8,8 @@ import org.springframework.stereotype.Service;
 public class CrewService {
 
     private final CrewRepository crewRepository;
+    
+    public CrewResponse getCrew(String instructorId) {
+        return crewRepository.findByInstructorId(instructorId);
+    }
 }

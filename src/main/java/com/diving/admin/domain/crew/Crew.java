@@ -19,6 +19,9 @@ public class Crew {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(nullable = false, length = 36)
+    private String instructorId;
+
     @Column(length = 500)
     private String description;
 
