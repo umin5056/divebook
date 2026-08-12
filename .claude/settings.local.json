@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/gradle/gradle/v8.13.0/gradlew\" -o /Users/woomin/Documents/Archive/Project/DiveClass/BE/gradlew)",
+      "Bash(chmod +x /Users/woomin/Documents/Archive/Project/DiveClass/BE/gradlew)",
+      "Bash(./gradlew compileJava)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git checkout *)",
+      "Bash(rm -rf /Users/woomin/Documents/Archive/Project/DiveBook/BE/src/main/java/com/diving/admin/domain/crew)",
+      "Bash(rm -f /Users/woomin/Documents/Archive/Project/DiveBook/BE/src/main/java/com/diving/admin/domain/auth/KakaoClient.java)",
+      "Bash(rm -f /Users/woomin/Documents/Archive/Project/DiveBook/BE/src/main/java/com/diving/admin/domain/auth/KakaoUserInfo.java)",
+      "Bash(rm -f /Users/woomin/Documents/Archive/Project/DiveBook/BE/src/main/java/com/diving/admin/global/config/KakaoProperties.java)",
+      "Bash(rm -rf /Users/woomin/Documents/Archive/Project/DiveBook/BE/src/main/java/com/diving/admin/global/redis)",
+      "Bash(git *)",
+      "Bash(./gradlew compileJava --console=plain)",
+      "Bash(npm install *)",
+      "Bash(./gradlew compileJava -q)",
+      "Bash(gh repo *)",
+      "Bash(mkdir -p /tmp/divebook_orig_stash)",
+      "Bash(mv BE_orig FE_orig set-ip.sh 고도화.md .claude /tmp/divebook_orig_stash/)"
+    ]
+  }
+}
