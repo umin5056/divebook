@@ -64,9 +64,16 @@ export function updateLesson(lessonId: string, data: CreateLessonRequest) {
 }
 
 export function getLessonEnrollments(lessonId: string) {
-  return client.get<EnrollmentResponse[]>(`/api/lessons/${lessonId}/enrollments`);
+  return client.get<EnrollmentResponse[]>(
+    `/api/lessons/${lessonId}/enrollments`,
+  );
 }
 
-export function updatePaymentStatus(enrollmentId: string, paymentStatus: EnrollmentResponse["paymentStatus"]) {
-  return client.patch(`/api/enrollments/${enrollmentId}/payment-status`, { paymentStatus });
+export function updatePaymentStatus(
+  enrollmentId: string,
+  paymentStatus: EnrollmentResponse["paymentStatus"],
+) {
+  return client.patch(`/api/enrollments/${enrollmentId}/payment-status`, {
+    paymentStatus,
+  });
 }

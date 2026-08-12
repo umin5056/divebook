@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const tabs = [
   { path: "/lesson", icon: CalendarDays, label: "강습" },
-  { path: "/crew", icon: UserSearch, label: "크루" },
+  { path: "/student", icon: UserSearch, label: "수강생" },
 ];
 
 const BottomNav = () => {

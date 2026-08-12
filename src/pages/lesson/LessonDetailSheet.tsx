@@ -10,20 +10,21 @@ import {
   DialogButton,
 } from "konsta/react";
 import { X } from "lucide-react";
-import LessonFormFields, { type LessonFormState } from "../../components/LessonFormFields";
+import LessonFormFields, {
+  type LessonFormState,
+} from "../../components/LessonFormFields";
 import {
-  updateLesson,
   updatePaymentStatus,
   lessonToUpdateRequest,
   type LessonResponse,
   type EnrollmentResponse,
 } from "../../api/lesson";
 import { useLessonEnrollments } from "../../hooks/useLessonEnrollments";
+import { useUpdateLesson } from "../../hooks/useUpdateLesson";
 
 interface LessonDetailSheetProps {
   lesson: LessonResponse | null;
   onClose: () => void;
-  onUpdated: () => void;
 }
 
 const PAYMENT_OPTIONS: {
@@ -69,7 +70,6 @@ function buildForm(lesson: LessonResponse): LessonFormState {
 interface LessonDetailContentProps {
   lesson: LessonResponse;
   onClose: () => void;
-  onUpdated: () => void;
   onConfirmClose: () => void;
   onTabChange: (tab: "info" | "enrollments") => void;
 }
@@ -77,10 +77,10 @@ interface LessonDetailContentProps {
 function LessonDetailContent({
   lesson,
   onClose,
-  onUpdated,
   onConfirmClose,
   onTabChange,
 }: LessonDetailContentProps) {
+  const updateLesson = useUpdateLesson();
   const [tab, setTab] = useState<"info" | "enrollments">("info");
   const [form, setForm] = useState<LessonFormState>(() => buildForm(lesson));
   const [toast, setToast] = useState("");
@@ -94,8 +94,15 @@ function LessonDetailContent({
   };
 
   const { data: fetchedEnrollments } = useLessonEnrollments(lesson.lessonId);
-  const [localEnrollments, setLocalEnrollments] = useState<EnrollmentResponse[]>([]);
+  const [localEnrollments, setLocalEnrollments] = useState<
+    EnrollmentResponse[]
+  >([]);
   const enrollmentsInitialized = useRef(false);
+
+  useEffect(() => {
+    onTabChange("info");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Sync TanStack Query data to local state once on initial load.
   // Not re-sorted on subsequent mutations — intentional UX decision.
@@ -156,37 +163,62 @@ function LessonDetailContent({
       (e) => e.paymentStatus === "paid",
     ).length;
 
-    if (next === "paid" && newPaidCount >= parsedMaxStudents && form.status !== "cancelled") {
-      await updateLesson(lesson.lessonId, lessonToUpdateRequest(lesson, "closed"));
+    if (
+      next === "paid" &&
+      newPaidCount >= parsedMaxStudents &&
+      form.status !== "cancelled"
+    ) {
+      await updateLesson.mutateAsync({
+        lessonId: lesson.lessonId,
+        data: lessonToUpdateRequest(lesson, "closed"),
+      });
       setForm((p) => ({ ...p, status: "closed" }));
       showToast("최대 인원이 찼습니다. 강습 상태가 마감으로 변경되었습니다.");
-    } else if (current === "paid" && newPaidCount < parsedMaxStudents && form.status === "closed") {
-      await updateLesson(lesson.lessonId, lessonToUpdateRequest(lesson, "open"));
+    } else if (
+      current === "paid" &&
+      newPaidCount < parsedMaxStudents &&
+      form.status === "closed"
+    ) {
+      await updateLesson.mutateAsync({
+        lessonId: lesson.lessonId,
+        data: lessonToUpdateRequest(lesson, "open"),
+      });
       setForm((p) => ({ ...p, status: "open" }));
       showToast("강습 상태가 진행으로 변경되었습니다.");
     }
-
-    onUpdated();
   };
 
   const handleSubmit = async () => {
-    if (!form.title) { showToast("제목을 입력하세요."); return; }
-    if (!form.location) { showToast("장소를 입력하세요."); return; }
-    if (form.startTime > form.endTime) { showToast("종료 시간이 시작 시간보다 이릅니다."); return; }
+    if (!form.title) {
+      showToast("제목을 입력하세요.");
+      return;
+    }
+    if (!form.location) {
+      showToast("장소를 입력하세요.");
+      return;
+    }
+    if (form.startTime > form.endTime) {
+      showToast("종료 시간이 시작 시간보다 이릅니다.");
+      return;
+    }
     if (parsedMaxStudents < paidCount) {
       showToast(`납부 인원(${paidCount}명)보다 적게 설정할 수 없습니다.`);
       return;
     }
 
     const finalStatus =
-      parsedMaxStudents === paidCount && form.status !== "cancelled" ? "closed" : form.status;
-    await updateLesson(lesson.lessonId, {
-      ...form,
-      maxStudents: parsedMaxStudents,
-      fee: Number(String(form.fee).replace(/,/g, "")),
-      status: finalStatus,
+      parsedMaxStudents === paidCount && form.status !== "cancelled"
+        ? "closed"
+        : form.status;
+    await updateLesson.mutateAsync({
+      lessonId: lesson.lessonId,
+      data: {
+        ...form,
+        maxStudents: parsedMaxStudents,
+        fee: Number(String(form.fee).replace(/,/g, "")),
+        status: finalStatus,
+      },
     });
-    onUpdated();
     onClose();
   };
 
@@ -294,16 +326,9 @@ function LessonDetailContent({
 export default function LessonDetailSheet({
   lesson,
   onClose,
-  onUpdated,
 }: LessonDetailSheetProps) {
   const [confirmOpened, setConfirmOpened] = useState(false);
   const tabRef = useRef<"info" | "enrollments">("info");
-  const prevLessonId = useRef<string | null>(null);
-
-  if (lesson?.lessonId !== prevLessonId.current) {
-    prevLessonId.current = lesson?.lessonId ?? null;
-    tabRef.current = "info";
-  }
 
   return (
     <Sheet
@@ -318,9 +343,10 @@ export default function LessonDetailSheet({
           key={lesson.lessonId}
           lesson={lesson}
           onClose={onClose}
-          onUpdated={onUpdated}
           onConfirmClose={() => setConfirmOpened(true)}
-          onTabChange={(t) => { tabRef.current = t; }}
+          onTabChange={(t) => {
+            tabRef.current = t;
+          }}
         />
       )}
 

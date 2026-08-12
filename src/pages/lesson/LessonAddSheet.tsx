@@ -11,7 +11,7 @@ import {
 } from "konsta/react";
 import { X } from "lucide-react";
 import LessonFormFields, { type LessonFormState } from "../../components/LessonFormFields";
-import { createLesson } from "../../api/lesson";
+import { useCreateLesson } from "../../hooks/useCreateLesson";
 
 interface LessonAddSheetProps {
   opened: boolean;
@@ -30,6 +30,7 @@ function getDefaults() {
 }
 
 export default function LessonAddSheet({ opened, onClose }: LessonAddSheetProps) {
+  const createLesson = useCreateLesson();
   const refs = {
     title: useRef<HTMLInputElement>(null),
     location: useRef<HTMLInputElement>(null),
@@ -83,7 +84,7 @@ export default function LessonAddSheet({ opened, onClose }: LessonAddSheetProps)
     if (!form.location) { showToast("장소를 입력하세요."); return; }
     if (form.startTime > form.endTime) { showToast("종료 시간이 시작 시간보다 이릅니다."); return; }
 
-    await createLesson({
+    await createLesson.mutateAsync({
       ...form,
       maxStudents: Number(String(form.maxStudents).replace(/,/g, "")),
       fee: Number(String(form.fee).replace(/,/g, "")),

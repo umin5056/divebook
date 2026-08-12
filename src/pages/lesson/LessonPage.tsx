@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLessons } from "../../hooks/useLessons";
 import { Searchbar, Fab, Popover, List, ListItem, Link } from "konsta/react";
 import { Plus } from "lucide-react";
@@ -6,7 +6,8 @@ import LessonAddSheet from "./LessonAddSheet";
 import LessonDetailSheet from "./LessonDetailSheet";
 import LessonCard from "../../components/LessonCard";
 import type { LessonResponse } from "../../api/lesson";
-import { updateLesson, lessonToUpdateRequest } from "../../api/lesson";
+import { useUpdateLesson } from "../../hooks/useUpdateLesson";
+import { lessonToUpdateRequest } from "../../api/lesson";
 
 const STATUS_OPTIONS = [
   { label: "전체", value: "all" },
@@ -23,24 +24,21 @@ export default function LessonPage() {
   const [selectedLesson, setSelectedLesson] = useState<LessonResponse | null>(
     null,
   );
-  const { data: lessons, refetch } = useLessons();
+  const updateLesson = useUpdateLesson();
+  const { data: lessons } = useLessons();
 
-  useEffect(() => {
-    refetch();
-  }, [addSheetOpened, refetch]);
+  const filteredLessons = lessons?.filter(
+    (lesson) =>
+      (statusOption.value === "all" || lesson.status === statusOption.value) &&
+      (lesson.title.includes(searchQuery) ||
+        lesson.location.includes(searchQuery)),
+  );
 
-  const filteredLessons = lessons?.filter((lesson) => {
-    const matchesStatus =
-      statusOption.value === "all" || lesson.status === statusOption.value;
-    const matchesSearch =
-      lesson.title.includes(searchQuery) ||
-      lesson.location.includes(searchQuery);
-    return matchesStatus && matchesSearch;
-  });
-
-  const handleCancel = async (lesson: LessonResponse) => {
-    await updateLesson(lesson.lessonId, lessonToUpdateRequest(lesson, "cancelled"));
-    refetch();
+  const handleCancel = (lesson: LessonResponse) => {
+    updateLesson.mutate({
+      lessonId: lesson.lessonId,
+      data: lessonToUpdateRequest(lesson, "cancelled"),
+    });
   };
 
   return (
@@ -97,7 +95,6 @@ export default function LessonPage() {
       <LessonDetailSheet
         lesson={selectedLesson}
         onClose={() => setSelectedLesson(null)}
-        onUpdated={refetch}
       />
 
       <Fab

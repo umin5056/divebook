@@ -5,8 +5,8 @@ import type { LessonResponse } from "../api/lesson";
 
 interface LessonCardProps {
   lesson: LessonResponse;
-  onCancel?: (lesson: LessonResponse) => void;
-  onPress?: (lesson: LessonResponse) => void;
+  onCancel: (lesson: LessonResponse) => void;
+  onPress: (lesson: LessonResponse) => void;
 }
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
@@ -53,7 +53,7 @@ export default function LessonCard({
         style={{ width: CANCEL_BUTTON_WIDTH }}
         onClick={() => {
           setOffsetX(0);
-          onCancel?.(lesson);
+          onCancel(lesson);
         }}
       >
         <span className="text-white text-lg font-bold">취 소</span>
@@ -65,7 +65,7 @@ export default function LessonCard({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        onClick={() => offsetX === 0 && onPress?.(lesson)}
+        onClick={() => offsetX === 0 && onPress(lesson)}
       >
         <Card>
           <div className="flex items-start justify-between gap-2">

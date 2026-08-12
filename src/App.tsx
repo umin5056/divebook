@@ -3,7 +3,7 @@ import { Layout } from "./components/Layout";
 import LoginPage from "./pages/login/LoginPage";
 import AuthCallbackPage from "./pages/login/AuthCallbackPage";
 import LessonPage from "./pages/lesson/LessonPage";
-import CrewPage from "./pages/crew/CrewPage";
+import StudentPage from "./pages/student/StudentPage";
 
 export default function App() {
   return (
@@ -13,7 +13,7 @@ export default function App() {
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route element={<Layout />}>
           <Route path="/lesson" element={<LessonPage />} />
-          <Route path="/crew" element={<CrewPage />} />
+          <Route path="/student" element={<StudentPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -23,9 +23,21 @@ type LessonFormRefs = {
 };
 
 const STATUS_OPTIONS = [
-  { value: "open", label: "진행", color: "text-white border-blue-500 bg-blue-500" },
-  { value: "closed", label: "마감", color: "text-white border-red-500 bg-red-500" },
-  { value: "cancelled", label: "취소", color: "text-white border-gray-400 bg-gray-500" },
+  {
+    value: "open",
+    label: "진행",
+    color: "text-white border-blue-500 bg-blue-500",
+  },
+  {
+    value: "closed",
+    label: "마감",
+    color: "text-white border-red-500 bg-red-500",
+  },
+  {
+    value: "cancelled",
+    label: "취소",
+    color: "text-white border-gray-400 bg-gray-500",
+  },
 ] as const;
 
 interface LessonFormFieldsProps {
@@ -43,6 +55,7 @@ export default function LessonFormFields({
   showToast,
   isFull = false,
 }: LessonFormFieldsProps) {
+  const { title: titleRef, location: locationRef, fee: feeRef, maxStudents: maxStudentsRef, content: contentRef } = refs;
   const handleChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const isNumberField = ["fee", "maxStudents"].includes(field);
@@ -61,14 +74,14 @@ export default function LessonFormFields({
     <div className="divide-y divide-gray-100">
       <FormRow label="제목">
         <ClearableInput
-          ref={refs.title}
+          ref={titleRef}
           type="text"
           value={form.title}
           onChange={handleChange("title")}
           onClear={() => setForm((p) => ({ ...p, title: "" }))}
           maxLength={100}
           enterKeyHint="next"
-          onKeyDown={(e) => e.key === "Enter" && refs.location.current?.focus()}
+          onKeyDown={(e) => e.key === "Enter" && locationRef.current?.focus()}
           className="text-xl text-gray-900"
           placeholder="입력하세요."
         />
@@ -99,7 +112,7 @@ export default function LessonFormFields({
 
       <FormRow label="장소">
         <ClearableInput
-          ref={refs.location}
+          ref={locationRef}
           type="text"
           value={form.location}
           onChange={handleChange("location")}
@@ -140,12 +153,14 @@ export default function LessonFormFields({
 
       <FormRow label="요금">
         <ClearableInput
-          ref={refs.fee}
+          ref={feeRef}
           type="text"
           value={form.fee}
           onChange={handleChange("fee")}
           onClear={() => setForm((p) => ({ ...p, fee: "" }))}
-          onKeyDown={(e) => e.key === "Enter" && refs.maxStudents.current?.focus()}
+          onKeyDown={(e) =>
+            e.key === "Enter" && maxStudentsRef.current?.focus()
+          }
           maxLength={8}
           inputMode="numeric"
           enterKeyHint="done"
@@ -156,7 +171,7 @@ export default function LessonFormFields({
 
       <FormRow label="인원">
         <ClearableInput
-          ref={refs.maxStudents}
+          ref={maxStudentsRef}
           type="text"
           value={form.maxStudents}
           onChange={handleChange("maxStudents")}
@@ -171,7 +186,7 @@ export default function LessonFormFields({
 
       <FormRow label="메모">
         <ClearableTextarea
-          ref={refs.content}
+          ref={contentRef}
           value={form.content}
           onChange={(e) => setForm((p) => ({ ...p, content: e.target.value }))}
           onClear={() => setForm((p) => ({ ...p, content: "" }))}
