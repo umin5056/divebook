@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,12 +16,11 @@ import java.time.LocalTime;
 public class Lesson {
 
     @Id
-    @UuidGenerator
-    @Column(length = 36)
-    private String lessonId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long lessonId;
 
-    @Column(nullable = false, length = 36)
-    private String instructorId;
+    @Column(nullable = false)
+    private Long instructorId;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -74,7 +72,7 @@ public class Lesson {
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public static Lesson create(String instructorId, CreateLessonRequest req) {
+    public static Lesson create(Long instructorId, CreateLessonRequest req) {
         Lesson lesson = new Lesson();
         lesson.instructorId = instructorId;
         lesson.title = req.title();

@@ -2,7 +2,6 @@ package com.diving.admin.domain.enrollment;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 
@@ -12,15 +11,15 @@ import java.time.LocalDateTime;
 public class Enrollment {
 
     @Id
-    @UuidGenerator
-    @Column(name = "enrollment_id", length = 36)
-    private String enrollmentId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "enrollment_id")
+    private Long enrollmentId;
 
-    @Column(name = "lesson_id", nullable = false, length = 36)
-    private String lessonId;
+    @Column(name = "lesson_id", nullable = false)
+    private Long lessonId;
 
-    @Column(name = "student_id", nullable = false, length = 36)
-    private String studentId;
+    @Column(name = "student_id", nullable = false)
+    private Long studentId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

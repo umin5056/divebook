@@ -37,11 +37,6 @@ public class JwtProvider {
         }
     }
 
-    public long getRemainingExpiration(String token) {
-        Date expiration = parseClaims(token).getExpiration();
-        return Math.max(0, expiration.getTime() - System.currentTimeMillis());
-    }
-
     private String createToken(String username, long expiration) {
         Date now = new Date();
         return Jwts.builder()

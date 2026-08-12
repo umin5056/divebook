@@ -19,7 +19,7 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<List<StudentResponse>> getList(
-        @AuthenticationPrincipal String instructorId
+        @AuthenticationPrincipal Long instructorId
     ) {
         return ResponseEntity.ok(studentService.getList(instructorId));
     }

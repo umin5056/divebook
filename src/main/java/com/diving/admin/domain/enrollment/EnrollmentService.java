@@ -11,7 +11,7 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
 
     @Transactional
-    public void updatePaymentStatus(String enrollmentId, PaymentStatus paymentStatus) {
+    public void updatePaymentStatus(Long enrollmentId, PaymentStatus paymentStatus) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Enrollment not found"));
         enrollment.updatePaymentStatus(paymentStatus);

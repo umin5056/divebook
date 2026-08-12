@@ -4,36 +4,34 @@ import com.diving.admin.domain.instructor.Instructor;
 import com.diving.admin.domain.instructor.InstructorRepository;
 import com.diving.admin.global.jwt.JwtProperties;
 import com.diving.admin.global.jwt.JwtProvider;
-import com.diving.admin.global.redis.RedisTokenStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final KakaoClient kakaoClient;
+    private final EmailVerificationService emailVerificationService;
     private final InstructorRepository instructorRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProvider jwtProvider;
     private final JwtProperties jwtProperties;
-    private final RedisTokenStore redisTokenStore;
 
-    public LoginResponse kakaoLogin(String code) {
-        String kakaoAccessToken = kakaoClient.getAccessToken(code);
-        KakaoUserInfo userInfo = kakaoClient.getUserInfo(kakaoAccessToken);
+    public void sendCode(String email) {
+        emailVerificationService.sendCode(email);
+    }
 
-        Instructor instructor = instructorRepository.findByKakaoId(userInfo.kakaoId())
-                .orElseGet(() -> instructorRepository.save(
-                        Instructor.create(userInfo.kakaoId(), userInfo.nickname(), userInfo.profileImageUrl())
-                ));
+    public LoginResponse verifyAndLogin(String email, String code) {
+        if (!emailVerificationService.verifyCode(email, code)) {
+            throw new IllegalArgumentException("인증 코드가 올바르지 않거나 만료되었습니다.");
+        }
 
-        String instructorId = instructor.getInstructorId();
-        String accessToken = jwtProvider.createAccessToken(instructorId);
-        String refreshToken = jwtProvider.createRefreshToken(instructorId);
+        Instructor instructor = instructorRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 강사입니다."));
 
-        redisTokenStore.saveRefreshToken(instructorId, refreshToken, jwtProperties.refreshExpiration());
-
-        return new LoginResponse(accessToken, refreshToken);
+        return issueTokens(instructor.getInstructorId());
     }
 
     public LoginResponse refresh(String refreshToken) {
@@ -41,19 +39,18 @@ public class AuthService {
             throw new IllegalArgumentException("유효하지 않은 refresh token입니다.");
         }
 
-        String instructorId = jwtProvider.getUsername(refreshToken);
-        String stored = redisTokenStore.getRefreshToken(instructorId);
+        RefreshToken stored = refreshTokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new IllegalArgumentException("refresh token이 일치하지 않습니다."));
 
-        if (!refreshToken.equals(stored)) {
-            throw new IllegalArgumentException("refresh token이 일치하지 않습니다.");
+        if (stored.getExpiresAt().isBefore(LocalDateTime.now())) {
+            refreshTokenRepository.delete(stored);
+            throw new IllegalArgumentException("만료된 refresh token입니다.");
         }
 
-        String newAccessToken = jwtProvider.createAccessToken(instructorId);
-        String newRefreshToken = jwtProvider.createRefreshToken(instructorId);
+        Long instructorId = stored.getInstructorId();
+        refreshTokenRepository.delete(stored);
 
-        redisTokenStore.saveRefreshToken(instructorId, newRefreshToken, jwtProperties.refreshExpiration());
-
-        return new LoginResponse(newAccessToken, newRefreshToken);
+        return issueTokens(instructorId);
     }
 
     public void logout(String accessToken) {
@@ -61,8 +58,17 @@ public class AuthService {
             throw new IllegalArgumentException("유효하지 않은 access token입니다.");
         }
 
-        String instructorId = jwtProvider.getUsername(accessToken);
-        redisTokenStore.deleteRefreshToken(instructorId);
-        redisTokenStore.blacklistAccessToken(accessToken, jwtProvider.getRemainingExpiration(accessToken));
+        Long instructorId = Long.valueOf(jwtProvider.getUsername(accessToken));
+        refreshTokenRepository.deleteByInstructorId(instructorId);
+    }
+
+    private LoginResponse issueTokens(Long instructorId) {
+        String accessToken = jwtProvider.createAccessToken(String.valueOf(instructorId));
+        String refreshToken = jwtProvider.createRefreshToken(String.valueOf(instructorId));
+
+        LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(jwtProperties.refreshExpiration() / 1000);
+        refreshTokenRepository.save(RefreshToken.create(instructorId, refreshToken, expiresAt));
+
+        return new LoginResponse(accessToken, refreshToken);
     }
 }

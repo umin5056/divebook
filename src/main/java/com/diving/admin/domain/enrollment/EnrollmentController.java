@@ -13,7 +13,7 @@ public class EnrollmentController {
 
     @PatchMapping("/{enrollmentId}/payment-status")
     public ResponseEntity<Void> updatePaymentStatus(
-            @PathVariable String enrollmentId,
+            @PathVariable Long enrollmentId,
             @RequestBody PaymentStatusRequest request
     ) {
         enrollmentService.updatePaymentStatus(enrollmentId, request.paymentStatus());

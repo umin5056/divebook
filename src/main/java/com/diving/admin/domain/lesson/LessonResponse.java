@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record LessonResponse(
-        String lessonId,
+        Long lessonId,
         String title,
         String location,
         LocalDate lessonDate,

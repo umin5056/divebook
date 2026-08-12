@@ -18,23 +18,23 @@ public class LessonController {
 
     @GetMapping
     public ResponseEntity<List<LessonResponse>> getList(
-            @AuthenticationPrincipal String instructorId
+            @AuthenticationPrincipal Long instructorId
     ) {
         return ResponseEntity.ok(lessonService.getList(instructorId));
     }
 
     @PostMapping
     public ResponseEntity<Void> create(
-            @AuthenticationPrincipal String instructorId,
+            @AuthenticationPrincipal Long instructorId,
             @RequestBody CreateLessonRequest request
     ) {
-        String lessonId = lessonService.create(instructorId, request);
+        Long lessonId = lessonService.create(instructorId, request);
         return ResponseEntity.created(URI.create("/api/lessons/" + lessonId)).build();
     }
 
     @PutMapping("/{lessonId}")
     public ResponseEntity<Void> update(
-            @PathVariable String lessonId,
+            @PathVariable Long lessonId,
             @RequestBody UpdateLessonRequest request
     ) {
         lessonService.update(lessonId, request);
@@ -43,7 +43,7 @@ public class LessonController {
 
     @GetMapping("/{lessonId}/enrollments")
     public ResponseEntity<List<EnrollmentResponse>> getEnrollments(
-            @PathVariable String lessonId
+            @PathVariable Long lessonId
     ) {
         return ResponseEntity.ok(lessonService.getEnrollments(lessonId));
     }

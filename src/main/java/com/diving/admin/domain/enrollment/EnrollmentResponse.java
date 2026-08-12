@@ -3,8 +3,8 @@ package com.diving.admin.domain.enrollment;
 import com.diving.admin.domain.student.Student;
 
 public record EnrollmentResponse(
-        String enrollmentId,
-        String studentId,
+        Long enrollmentId,
+        Long studentId,
         String name,
         String phone,
         PaymentStatus paymentStatus

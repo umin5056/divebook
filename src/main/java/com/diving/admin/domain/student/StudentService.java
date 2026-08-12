@@ -12,7 +12,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    public List<StudentResponse> getList(String instructorId) {
+    public List<StudentResponse> getList(Long instructorId) {
         return studentRepository.findByInstructorIdOrderByNameAsc(instructorId)
             .stream().map(StudentResponse::from).toList();
 

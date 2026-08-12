@@ -1,8 +1,8 @@
 package com.diving.admin.domain.student;
 
 public record StudentResponse (
-  String studentId,
-  String instructorId,
+  Long studentId,
+  Long instructorId,
   String phone,
   String name,
   String email,

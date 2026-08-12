@@ -3,7 +3,6 @@ package com.diving.admin.domain.instructor;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 
@@ -14,17 +13,11 @@ import java.time.LocalDateTime;
 public class Instructor {
 
     @Id
-    @UuidGenerator
-    @Column(name = "instructor_id", length = 36)
-    private String instructorId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "instructor_id")
+    private Long instructorId;
 
-    @Column(name = "crew_id", length = 36)
-    private String crewId;
-
-    @Column(name = "kakao_id", nullable = false, unique = true, length = 100)
-    private String kakaoId;
-
-    @Column(length = 255)
+    @Column(nullable = false, unique = true, length = 255)
     private String email;
 
     @Column(length = 20)
@@ -45,9 +38,9 @@ public class Instructor {
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
 
-    public static Instructor create(String kakaoId, String name, String profileImageUrl) {
+    public static Instructor create(String email, String name, String profileImageUrl) {
         Instructor instructor = new Instructor();
-        instructor.kakaoId = kakaoId;
+        instructor.email = email;
         instructor.name = name;
         instructor.profileImageUrl = profileImageUrl;
         instructor.createdAt = LocalDateTime.now();

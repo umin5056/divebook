@@ -17,24 +17,24 @@ public class LessonService {
     private final EnrollmentRepository enrollmentRepository;
     private final StudentRepository studentRepository;
 
-    public List<LessonResponse> getList(String instructorId) {
+    public List<LessonResponse> getList(Long instructorId) {
         return lessonRepository.findByInstructorIdOrderByLessonDateDesc(instructorId)
                 .stream().map(LessonResponse::from).toList();
     }
 
-    public String create(String instructorId, CreateLessonRequest request) {
+    public Long create(Long instructorId, CreateLessonRequest request) {
         Lesson lesson = Lesson.create(instructorId, request);
         return lessonRepository.save(lesson).getLessonId();
     }
 
     @Transactional
-    public void update(String lessonId, UpdateLessonRequest request) {
+    public void update(Long lessonId, UpdateLessonRequest request) {
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
         lesson.update(request);
     }
 
-    public List<EnrollmentResponse> getEnrollments(String lessonId) {
+    public List<EnrollmentResponse> getEnrollments(Long lessonId) {
         return enrollmentRepository.findByLessonId(lessonId).stream()
                 .map(e -> studentRepository.findById(e.getStudentId())
                         .map(s -> EnrollmentResponse.of(e, s))
