@@ -1,26 +1,5 @@
-import { type RefObject } from "react";
 import FormRow from "./FormRow";
 import { ClearableInput, ClearableTextarea } from "./ClearableInput";
-
-export type LessonFormState = {
-  title: string;
-  location: string;
-  lessonDate: string;
-  startTime: string;
-  endTime: string;
-  fee: number | string;
-  maxStudents: number | string;
-  content: string;
-  status: "open" | "closed" | "cancelled";
-};
-
-type LessonFormRefs = {
-  title: RefObject<HTMLInputElement | null>;
-  location: RefObject<HTMLInputElement | null>;
-  fee: RefObject<HTMLInputElement | null>;
-  maxStudents: RefObject<HTMLInputElement | null>;
-  content: RefObject<HTMLTextAreaElement | null>;
-};
 
 const STATUS_OPTIONS = [
   {
@@ -38,15 +17,7 @@ const STATUS_OPTIONS = [
     label: "취소",
     color: "text-white border-gray-400 bg-gray-500",
   },
-] as const;
-
-interface LessonFormFieldsProps {
-  form: LessonFormState;
-  setForm: React.Dispatch<React.SetStateAction<LessonFormState>>;
-  refs: LessonFormRefs;
-  showToast: (message: string) => void;
-  isFull?: boolean;
-}
+];
 
 export default function LessonFormFields({
   form,
@@ -54,10 +25,10 @@ export default function LessonFormFields({
   refs,
   showToast,
   isFull = false,
-}: LessonFormFieldsProps) {
+}) {
   const { title: titleRef, location: locationRef, fee: feeRef, maxStudents: maxStudentsRef, content: contentRef } = refs;
   const handleChange =
-    (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (field) => (e) => {
       const isNumberField = ["fee", "maxStudents"].includes(field);
       const value = e.target.value;
       if (value !== "" && isNumberField) {

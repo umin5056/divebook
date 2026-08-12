@@ -10,18 +10,13 @@ import {
   DialogButton,
 } from "konsta/react";
 import { X } from "lucide-react";
-import LessonFormFields, { type LessonFormState } from "../../components/LessonFormFields";
+import LessonFormFields from "../../components/LessonFormFields";
 import { useCreateLesson } from "../../hooks/useCreateLesson";
-
-interface LessonAddSheetProps {
-  opened: boolean;
-  onClose: () => void;
-}
 
 function getDefaults() {
   const now = new Date();
   const end = new Date(now.getTime() + 60 * 60 * 1000);
-  const pad = (n: number) => String(n).padStart(2, "0");
+  const pad = (n) => String(n).padStart(2, "0");
   return {
     date: `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`,
     startTime: `${pad(now.getHours())}:${pad(now.getMinutes())}`,
@@ -29,21 +24,21 @@ function getDefaults() {
   };
 }
 
-export default function LessonAddSheet({ opened, onClose }: LessonAddSheetProps) {
+export default function LessonAddSheet({ opened, onClose }) {
   const createLesson = useCreateLesson();
   const refs = {
-    title: useRef<HTMLInputElement>(null),
-    location: useRef<HTMLInputElement>(null),
-    fee: useRef<HTMLInputElement>(null),
-    maxStudents: useRef<HTMLInputElement>(null),
-    content: useRef<HTMLTextAreaElement>(null),
+    title: useRef(null),
+    location: useRef(null),
+    fee: useRef(null),
+    maxStudents: useRef(null),
+    content: useRef(null),
   };
 
   const [toast, setToast] = useState("");
   const [confirmOpened, setConfirmOpened] = useState(false);
 
   const defaults = getDefaults();
-  const [form, setForm] = useState<LessonFormState>({
+  const [form, setForm] = useState({
     title: "",
     location: "",
     lessonDate: defaults.date,
@@ -55,7 +50,7 @@ export default function LessonAddSheet({ opened, onClose }: LessonAddSheetProps)
     status: "open",
   });
 
-  const showToast = (message: string) => {
+  const showToast = (message) => {
     setToast(message);
     setTimeout(() => setToast(""), 2000);
   };

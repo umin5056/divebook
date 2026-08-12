@@ -1,33 +1,11 @@
-import {
-  Link,
-  Sheet,
-  Toolbar,
-  ToolbarPane,
-  Button,
-  Toast,
-  Dialog,
-  DialogButton,
-} from "konsta/react";
+import { Sheet, Dialog, DialogButton } from "konsta/react";
 import { useState } from "react";
-import type { StudentResponse } from "../../api/student";
 
-interface StudentDetailSheetProps {
-  student: StudentResponse | null;
-  onClose: () => void;
-}
-
-interface StudentDetailContenProps {
-  student: StudentResponse;
-}
-
-function StudentDetailContent({ student }) {
+function StudentDetailContent() {
   return <></>;
 }
 
-export default function StudentDetailSheet({
-  student,
-  onClose,
-}: StudentDetailSheetProps) {
+export default function StudentDetailSheet({ student, onClose }) {
   const [confirmOpened, setConfirmOpened] = useState(false);
 
   return (

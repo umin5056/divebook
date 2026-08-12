@@ -1,15 +1,8 @@
 import { useRef, useState } from "react";
 import { Card } from "konsta/react";
 import { MapPin, Clock } from "lucide-react";
-import type { LessonResponse } from "../api/lesson";
 
-interface LessonCardProps {
-  lesson: LessonResponse;
-  onCancel: (lesson: LessonResponse) => void;
-  onPress: (lesson: LessonResponse) => void;
-}
-
-const STATUS_LABEL: Record<string, { label: string; color: string }> = {
+const STATUS_LABEL = {
   open: { label: "진행", color: "bg-blue-500" },
   closed: { label: "마감", color: "bg-red-500" },
   cancelled: { label: "취소", color: "bg-gray-400" },
@@ -21,16 +14,16 @@ export default function LessonCard({
   lesson,
   onCancel,
   onPress,
-}: LessonCardProps) {
+}) {
   const statusStyle = STATUS_LABEL[lesson.status];
   const [offsetX, setOffsetX] = useState(0);
-  const startXRef = useRef<number | null>(null);
+  const startXRef = useRef(null);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = (e) => {
     startXRef.current = e.touches[0].clientX;
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = (e) => {
     if (startXRef.current === null) return;
     const delta = e.touches[0].clientX - startXRef.current;
     const clamped = Math.min(0, Math.max(-(CANCEL_BUTTON_WIDTH + 10), delta));

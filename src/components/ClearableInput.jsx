@@ -1,14 +1,7 @@
-import React, { forwardRef, useState } from "react";
+import { forwardRef, useState } from "react";
 import { X } from "lucide-react";
 
-interface ClearableInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  onClear: () => void;
-}
-
-export const ClearableInput = forwardRef<
-  HTMLInputElement | null,
-  ClearableInputProps
->(({ onClear, className, onFocus, onBlur, ...props }, ref) => {
+export const ClearableInput = forwardRef(({ onClear, className, onFocus, onBlur, ...props }, ref) => {
   const [focused, setFocused] = useState(false);
   const showClear = focused && !!props.value && props.value !== 0;
 
@@ -43,14 +36,7 @@ export const ClearableInput = forwardRef<
 
 ClearableInput.displayName = "ClearableInput";
 
-interface ClearableTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  onClear: () => void;
-}
-
-export const ClearableTextarea = forwardRef<
-  HTMLTextAreaElement | null,
-  ClearableTextareaProps
->(({ onClear, className, onFocus, onBlur, ...props }, ref) => {
+export const ClearableTextarea = forwardRef(({ onClear, className, onFocus, onBlur, ...props }, ref) => {
   const [focused, setFocused] = useState(false);
   const showClear = focused && !!props.value;
 

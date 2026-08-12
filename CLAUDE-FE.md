@@ -1,17 +1,18 @@
 # Coding Conventions
 
+> MVP 경량화 과정에서 제외/제거한 항목(Crew, 카카오 로그인, Redis, Docker, TypeScript 등)은 `../고도화.md` 참고.
+
 ## 공통
 
-- 언어: TypeScript
+- 언어: JavaScript
 - 들여쓰기: 2 spaces
 - 따옴표: 더블쿼트 (`"`)
-- 컴포넌트 파일명: PascalCase (`StudentPage.tsx`)
-- 유틸/훅 파일명: camelCase (`useIsMobile.ts`)
+- 컴포넌트 파일명: PascalCase (`StudentPage.jsx`)
+- 유틸/훅 파일명: camelCase (`useIsMobile.js`)
 
 ## React
 
 - 함수형 컴포넌트만 사용
-- props 타입은 인터페이스로 정의
 - 이벤트 핸들러 네이밍: `handle` prefix (`handleLogin`, `handleCancel`)
 - 페이지 컴포넌트: `default export`
 - 공통 컴포넌트: named export

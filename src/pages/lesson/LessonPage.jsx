@@ -5,7 +5,6 @@ import { Plus } from "lucide-react";
 import LessonAddSheet from "./LessonAddSheet";
 import LessonDetailSheet from "./LessonDetailSheet";
 import LessonCard from "../../components/LessonCard";
-import type { LessonResponse } from "../../api/lesson";
 import { useUpdateLesson } from "../../hooks/useUpdateLesson";
 import { lessonToUpdateRequest } from "../../api/lesson";
 
@@ -21,9 +20,7 @@ export default function LessonPage() {
   const [statusOption, setStatusOption] = useState(STATUS_OPTIONS[0]);
   const [statusOptionOpened, setStatusOptionOpened] = useState(false);
   const [addSheetOpened, setAddSheetOpened] = useState(false);
-  const [selectedLesson, setSelectedLesson] = useState<LessonResponse | null>(
-    null,
-  );
+  const [selectedLesson, setSelectedLesson] = useState(null);
   const updateLesson = useUpdateLesson();
   const { data: lessons } = useLessons();
 
@@ -34,7 +31,7 @@ export default function LessonPage() {
         lesson.location.includes(searchQuery)),
   );
 
-  const handleCancel = (lesson: LessonResponse) => {
+  const handleCancel = (lesson) => {
     updateLesson.mutate({
       lessonId: lesson.lessonId,
       data: lessonToUpdateRequest(lesson, "cancelled"),

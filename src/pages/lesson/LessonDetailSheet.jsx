@@ -10,29 +10,15 @@ import {
   DialogButton,
 } from "konsta/react";
 import { X } from "lucide-react";
-import LessonFormFields, {
-  type LessonFormState,
-} from "../../components/LessonFormFields";
+import LessonFormFields from "../../components/LessonFormFields";
 import {
   updatePaymentStatus,
   lessonToUpdateRequest,
-  type LessonResponse,
-  type EnrollmentResponse,
 } from "../../api/lesson";
 import { useLessonEnrollments } from "../../hooks/useLessonEnrollments";
 import { useUpdateLesson } from "../../hooks/useUpdateLesson";
 
-interface LessonDetailSheetProps {
-  lesson: LessonResponse | null;
-  onClose: () => void;
-}
-
-const PAYMENT_OPTIONS: {
-  value: "pending" | "paid" | "refunded";
-  label: string;
-  activeClass: string;
-  inactiveClass: string;
-}[] = [
+const PAYMENT_OPTIONS = [
   {
     value: "paid",
     label: "납부",
@@ -53,7 +39,7 @@ const PAYMENT_OPTIONS: {
   },
 ];
 
-function buildForm(lesson: LessonResponse): LessonFormState {
+function buildForm(lesson) {
   return {
     title: lesson.title,
     location: lesson.location,
@@ -67,36 +53,27 @@ function buildForm(lesson: LessonResponse): LessonFormState {
   };
 }
 
-interface LessonDetailContentProps {
-  lesson: LessonResponse;
-  onClose: () => void;
-  onConfirmClose: () => void;
-  onTabChange: (tab: "info" | "enrollments") => void;
-}
-
 function LessonDetailContent({
   lesson,
   onClose,
   onConfirmClose,
   onTabChange,
-}: LessonDetailContentProps) {
+}) {
   const updateLesson = useUpdateLesson();
-  const [tab, setTab] = useState<"info" | "enrollments">("info");
-  const [form, setForm] = useState<LessonFormState>(() => buildForm(lesson));
+  const [tab, setTab] = useState("info");
+  const [form, setForm] = useState(() => buildForm(lesson));
   const [toast, setToast] = useState("");
 
   const refs = {
-    title: useRef<HTMLInputElement>(null),
-    location: useRef<HTMLInputElement>(null),
-    fee: useRef<HTMLInputElement>(null),
-    maxStudents: useRef<HTMLInputElement>(null),
-    content: useRef<HTMLTextAreaElement>(null),
+    title: useRef(null),
+    location: useRef(null),
+    fee: useRef(null),
+    maxStudents: useRef(null),
+    content: useRef(null),
   };
 
   const { data: fetchedEnrollments } = useLessonEnrollments(lesson.lessonId);
-  const [localEnrollments, setLocalEnrollments] = useState<
-    EnrollmentResponse[]
-  >([]);
+  const [localEnrollments, setLocalEnrollments] = useState([]);
   const enrollmentsInitialized = useRef(false);
 
   useEffect(() => {
@@ -128,23 +105,19 @@ function LessonDetailContent({
   );
   const isFull = paidCount >= parsedMaxStudents;
 
-  const handleTabChange = (t: "info" | "enrollments") => {
+  const handleTabChange = (t) => {
     setTab(t);
     onTabChange(t);
   };
 
   const handleClose = () => (tab === "info" ? onConfirmClose() : onClose());
 
-  const showToast = (message: string) => {
+  const showToast = (message) => {
     setToast(message);
     setTimeout(() => setToast(""), 2000);
   };
 
-  const handlePaymentStatus = async (
-    enrollmentId: string,
-    current: EnrollmentResponse["paymentStatus"],
-    next: EnrollmentResponse["paymentStatus"],
-  ) => {
+  const handlePaymentStatus = async (enrollmentId, current, next) => {
     if (current === next) return;
 
     if (next === "paid" && paidCount >= lesson.maxStudents) {
@@ -235,7 +208,7 @@ function LessonDetailContent({
         </Toolbar>
 
         <div className="flex border-b border-gray-100 mx-8">
-          {(["info", "enrollments"] as const).map((t) => (
+          {["info", "enrollments"].map((t) => (
             <button
               key={t}
               onClick={() => handleTabChange(t)}
@@ -323,12 +296,9 @@ function LessonDetailContent({
   );
 }
 
-export default function LessonDetailSheet({
-  lesson,
-  onClose,
-}: LessonDetailSheetProps) {
+export default function LessonDetailSheet({ lesson, onClose }) {
   const [confirmOpened, setConfirmOpened] = useState(false);
-  const tabRef = useRef<"info" | "enrollments">("info");
+  const tabRef = useRef("info");
 
   return (
     <Sheet

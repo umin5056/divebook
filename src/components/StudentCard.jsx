@@ -1,13 +1,7 @@
 import { Card } from "konsta/react";
 import { Phone, Mail } from "lucide-react";
-import type { StudentResponse } from "../api/student";
 
-interface StudentCardProps {
-  student: StudentResponse;
-  onPress?: (student: StudentResponse) => void;
-}
-
-export default function StudentCard({ student, onPress }: StudentCardProps) {
+export default function StudentCard({ student, onPress }) {
   return (
     <Card onClick={() => onPress?.(student)}>
       <div className="text-xl font-bold text-gray-900">{student.name}</div>

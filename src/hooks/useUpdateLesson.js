@@ -4,8 +4,7 @@ import { updateLesson } from "../api/lesson";
 export function useUpdateLesson() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ lessonId, data }: { lessonId: string; data: Parameters<typeof updateLesson>[1] }) =>
-      updateLesson(lessonId, data),
+    mutationFn: ({ lessonId, data }) => updateLesson(lessonId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
     },

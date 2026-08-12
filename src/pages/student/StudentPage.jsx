@@ -1,14 +1,12 @@
 import { Searchbar } from "konsta/react";
 import { useState } from "react";
 import { useStudents } from "../../hooks/useStudents";
-import type { StudentResponse } from "../../api/student";
 import StudentCard from "../../components/StudentCard";
 import StudentDetailSheet from "./StudentDetailSheet";
 
 export default function StudentPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStudent, setSelectedStudent] =
-    useState<StudentResponse | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
   const { data: students } = useStudents();
 
   const filteredStudents = students?.filter((student) =>
