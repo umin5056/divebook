@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useLessons } from "../../hooks/useLessons";
 import { Searchbar, Fab, Popover, List, ListItem, Link } from "konsta/react";
 import { Plus } from "lucide-react";
-import LessonAddSheet from "./LessonAddSheet";
-import LessonDetailSheet from "./LessonDetailSheet";
-import LessonCard from "../../components/LessonCard";
+import LessonAddSheet from "../../components/lesson/LessonAddSheet";
+import LessonDetailSheet from "../../components/lesson/LessonDetailSheet";
+import LessonCard from "../../components/lesson/LessonCard";
 import { useUpdateLesson } from "../../hooks/useUpdateLesson";
 import { lessonToUpdateRequest } from "../../api/lesson";
 
@@ -95,7 +95,7 @@ export default function LessonPage() {
       />
 
       <Fab
-        className="fixed right-safe-4 bottom-safe-19 z-21"
+        className="fixed right-8 bottom-20 z-21"
         icon={<Plus />}
         onClick={() => setAddSheetOpened(true)}
       />

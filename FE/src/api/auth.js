@@ -7,3 +7,7 @@ export function sendEmailCode(data) {
 export function verifyEmailCode(data) {
   return client.post("/api/auth/email/verify", data);
 }
+
+export function login(data) {
+  return client.post("/api/auth/login", data);
+}

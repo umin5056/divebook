@@ -11,6 +11,10 @@ body,
   margin: 0 auto;
 }
 
+#root {
+  contain: layout;
+}
+
 .k-app {
   min-height: 0 !important;
   height: 100%;
