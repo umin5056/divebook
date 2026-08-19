@@ -59,12 +59,21 @@ src/
 | ----------------- | ------------ | ------------------- |
 | instructor_id     | bigint       | PK, auto_increment  |
 | email             | varchar(255) | 이메일 (UNI, 로그인 식별자) |
+| password          | varchar(255) | 비밀번호 (BCrypt 해시, nullable) |
 | phone             | varchar(20)  | 전화번호            |
 | profile_image_url | varchar(500) | 프로필 이미지       |
 | name              | varchar(100) | 이름                |
 | content           | text         | 내용                |
 | created_at        | datetime     | 생성일              |
 | modified_at       | datetime     | 수정일              |
+
+비밀번호는 평문으로 저장하지 않고 `BCryptPasswordEncoder`(`SecurityConfig`에 빈 등록)로 해시하여 저장한다. BCrypt를 선택한 이유:
+
+- 복호화가 불가능한 단방향 해시라 DB 유출 시에도 원문 비밀번호가 노출되지 않는다.
+- 해시마다 랜덤 salt가 자동으로 포함되어, 동일한 비밀번호도 매번 다른 해시값이 저장된다 (레인보우 테이블 공격 방어).
+- cost factor로 계산 비용을 의도적으로 늦춰 무차별 대입 공격에 강하다. SHA-256류의 범용 해시는 계산이 빨라 비밀번호 저장에는 부적합하다.
+- Spring Security에 내장되어 있어 별도 구현 없이 바로 사용 가능하다.
+- Argon2/scrypt가 메모리 하드 특성 등에서 더 최신 대안이지만, 파라미터 튜닝 부담이 없고 여전히 안전성이 검증된 BCrypt로 충분하다고 판단해 채택했다.
 
 ### tbl_student (수강생)
 
