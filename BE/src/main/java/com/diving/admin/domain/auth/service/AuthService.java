@@ -11,6 +11,7 @@ import com.diving.admin.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -29,6 +30,12 @@ public class AuthService {
         emailVerificationService.sendCode(email);
     }
 
+    public void checkEmailCode(String email, String code) {
+        if (!emailVerificationService.isCodeValid(email, code)) {
+            throw new IllegalArgumentException("인증 코드가 올바르지 않거나 만료되었습니다.");
+        }
+    }
+
     public LoginResponse login(String email, String password) {
         Instructor instructor = instructorRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
@@ -40,13 +47,44 @@ public class AuthService {
         return issueTokens(instructor.getInstructorId());
     }
 
-    public LoginResponse verifyAndLogin(String email, String code) {
+    @Transactional
+    public LoginResponse signup(String name, String email, String password, String code) {
+        if (!emailVerificationService.verifyCode(email, code)) {
+            throw new IllegalArgumentException("인증 코드가 올바르지 않거나 만료되었습니다.");
+        }
+
+        if (password == null || password.length() < 8) {
+            throw new IllegalArgumentException("비밀번호는 8자리 이상이어야 합니다.");
+        }
+
+        if (instructorRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+        }
+
+        Instructor instructor = Instructor.create(email, name, null);
+        instructor.changePassword(passwordEncoder.encode(password));
+        instructorRepository.save(instructor);
+
+        return issueTokens(instructor.getInstructorId());
+    }
+
+    public LoginResponse loginWithCode(String email, String code) {
         if (!emailVerificationService.verifyCode(email, code)) {
             throw new IllegalArgumentException("인증 코드가 올바르지 않거나 만료되었습니다.");
         }
 
         Instructor instructor = instructorRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 강사입니다."));
+
+        return issueTokens(instructor.getInstructorId());
+    }
+
+    @Transactional
+    public LoginResponse resetPassword(String email, String password) {
+        Instructor instructor = instructorRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 강사입니다."));
+
+        instructor.changePassword(passwordEncoder.encode(password));
 
         return issueTokens(instructor.getInstructorId());
     }
@@ -70,6 +108,7 @@ public class AuthService {
         return issueTokens(instructorId);
     }
 
+    @Transactional
     public void logout(String accessToken) {
         if (!jwtProvider.isValid(accessToken)) {
             throw new IllegalArgumentException("유효하지 않은 access token입니다.");
@@ -77,6 +116,7 @@ public class AuthService {
 
         Long instructorId = Long.valueOf(jwtProvider.getUsername(accessToken));
         refreshTokenRepository.deleteByInstructorId(instructorId);
+        refreshTokenRepository.deleteByExpiresAtBefore(LocalDateTime.now());
     }
 
     private LoginResponse issueTokens(Long instructorId) {

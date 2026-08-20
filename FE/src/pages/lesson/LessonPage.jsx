@@ -95,7 +95,7 @@ export default function LessonPage() {
       />
 
       <Fab
-        className="fixed right-8 bottom-20 z-21"
+        className="fixed right-8 bottom-20 z-21 bg-[#008080]"
         icon={<Plus />}
         onClick={() => setAddSheetOpened(true)}
       />
