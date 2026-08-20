@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "../constants/env";
+import { logout } from "./auth";
 
 const client = axios.create({
   baseURL: API_BASE_URL,
@@ -14,12 +15,6 @@ client.interceptors.request.use((config) => {
 });
 
 let refreshPromise = null;
-
-function logout() {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
-  window.location.href = "/";
-}
 
 client.interceptors.response.use(
   (response) => response,
@@ -62,7 +57,7 @@ client.interceptors.response.use(
       logout();
       return Promise.reject(refreshError);
     }
-  }
+  },
 );
 
 export default client;

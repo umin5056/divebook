@@ -5,6 +5,7 @@ import com.diving.admin.domain.auth.dto.EmailVerifyRequest;
 import com.diving.admin.domain.auth.dto.LoginRequest;
 import com.diving.admin.domain.auth.dto.LoginResponse;
 import com.diving.admin.domain.auth.dto.RefreshRequest;
+import com.diving.admin.domain.auth.dto.SignupRequest;
 import com.diving.admin.domain.auth.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,25 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
     
-    @PostMapping("/email/verify")
-    public ResponseEntity<LoginResponse> verify(@RequestBody EmailVerifyRequest request) {
-        return ResponseEntity.ok(authService.verifyAndLogin(request.email(), request.code()));
+    @PostMapping("/email/loginWithCode")
+    public ResponseEntity<LoginResponse> loginWithCode(@RequestBody EmailVerifyRequest request) {
+        return ResponseEntity.ok(authService.loginWithCode(request.email(), request.code()));
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<LoginResponse> resetPassword(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.resetPassword(request.email(), request.password()));
+    }
+
+    @PostMapping("/email/checkEmailCode")
+    public ResponseEntity<Void> checkEmailCode(@RequestBody EmailVerifyRequest request) {
+        authService.checkEmailCode(request.email(), request.code());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<LoginResponse> signup(@RequestBody SignupRequest request) {
+        return ResponseEntity.ok(authService.signup(request.name(), request.email(), request.password(), request.code()));
     }
 
     @PostMapping("/login")

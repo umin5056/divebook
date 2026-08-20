@@ -31,16 +31,24 @@ public class EmailVerificationService {
         mailSender.send(message);
     }
 
+    public boolean isCodeValid(String email, String code) {
+        return matches(email, code);
+    }
+
     public boolean verifyCode(String email, String code) {
-        VerificationCode stored = codeStore.get(email);
-        if (stored == null || stored.expiresAt().isBefore(LocalDateTime.now())) {
-            return false;
-        }
-        boolean matched = stored.code().equals(code);
+        boolean matched = matches(email, code);
         if (matched) {
             codeStore.remove(email);
         }
         return matched;
+    }
+
+    private boolean matches(String email, String code) {
+        VerificationCode stored = codeStore.get(email);
+        if (stored == null || stored.expiresAt().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+        return stored.code().equals(code);
     }
 
     private String generateCode() {
