@@ -16,9 +16,11 @@ export default function LoginPage() {
   );
   const [error, setError] = useState("");
 
+  const defaultURI = "/dashboard";
+
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
-      navigate("/lesson", { replace: true });
+      navigate(defaultURI, { replace: true });
     }
   }, [navigate]);
 
@@ -36,7 +38,7 @@ export default function LoginPage() {
       } else {
         localStorage.removeItem("savedEmail");
       }
-      navigate("/lesson", { replace: true });
+      navigate(defaultURI, { replace: true });
     } catch (err) {
       setError(
         err.response?.data ?? "이메일 또는 비밀번호가 올바르지 않습니다.",

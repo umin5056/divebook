@@ -25,6 +25,9 @@ public class Enrollment {
     @Column(nullable = false)
     private PaymentStatus paymentStatus;
 
+    @Column(nullable=false)
+    private Boolean isApproval;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime requestedAt;
 
@@ -33,6 +36,11 @@ public class Enrollment {
 
     public void updatePaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
+        this.modifiedAt = java.time.LocalDateTime.now();
+    }
+
+    public void updateIsApproval(Boolean isApproval) {
+        this.isApproval = isApproval;
         this.modifiedAt = java.time.LocalDateTime.now();
     }
 }

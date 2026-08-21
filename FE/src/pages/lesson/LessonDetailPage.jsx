@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Link,
-  Sheet,
   Toolbar,
   ToolbarPane,
   Button,
@@ -10,11 +10,9 @@ import {
   DialogButton,
 } from "konsta/react";
 import { X } from "lucide-react";
-import LessonFormFields from "./LessonFormFields";
-import {
-  updatePaymentStatus,
-  lessonToUpdateRequest,
-} from "../../api/lesson";
+import LessonFormFields from "../../components/lesson/LessonFormFields";
+import { updatePaymentStatus, lessonToUpdateRequest } from "../../api/lesson";
+import { useLessons } from "../../hooks/useLessons";
 import { useLessonEnrollments } from "../../hooks/useLessonEnrollments";
 import { useUpdateLesson } from "../../hooks/useUpdateLesson";
 
@@ -53,12 +51,7 @@ function buildForm(lesson) {
   };
 }
 
-function LessonDetailContent({
-  lesson,
-  onClose,
-  onConfirmClose,
-  onTabChange,
-}) {
+function LessonDetailContent({ lesson, onClose, onConfirmClose, onTabChange }) {
   const updateLesson = useUpdateLesson();
   const [tab, setTab] = useState("info");
   const [form, setForm] = useState(() => buildForm(lesson));
@@ -157,7 +150,7 @@ function LessonDetailContent({
         data: lessonToUpdateRequest(lesson, "open"),
       });
       setForm((p) => ({ ...p, status: "open" }));
-      showToast("강습 상태가 진행으로 변경되었습니다.");
+      showToast("강습 상태가 모집으로 변경되었습니다.");
     }
   };
 
@@ -296,29 +289,30 @@ function LessonDetailContent({
   );
 }
 
-export default function LessonDetailSheet({ lesson, onClose }) {
+export default function LessonDetailPage() {
+  const navigate = useNavigate();
+  const { lessonId } = useParams();
+  const { data: lessons = [] } = useLessons();
+  const lesson = lessons.find((l) => String(l.lessonId) === lessonId);
+
   const [confirmOpened, setConfirmOpened] = useState(false);
   const tabRef = useRef("info");
 
+  const onClose = () => navigate(-1);
+
+  if (!lesson) return null;
+
   return (
-    <Sheet
-      className="max-w-145 mx-auto pb-5"
-      opened={!!lesson}
-      onBackdropClick={() =>
-        tabRef.current === "info" ? setConfirmOpened(true) : onClose()
-      }
-    >
-      {lesson && (
-        <LessonDetailContent
-          key={lesson.lessonId}
-          lesson={lesson}
-          onClose={onClose}
-          onConfirmClose={() => setConfirmOpened(true)}
-          onTabChange={(t) => {
-            tabRef.current = t;
-          }}
-        />
-      )}
+    <div className="max-w-145 mx-auto pb-5">
+      <LessonDetailContent
+        key={lesson.lessonId}
+        lesson={lesson}
+        onClose={onClose}
+        onConfirmClose={() => setConfirmOpened(true)}
+        onTabChange={(t) => {
+          tabRef.current = t;
+        }}
+      />
 
       <Dialog
         opened={confirmOpened}
@@ -340,6 +334,6 @@ export default function LessonDetailSheet({ lesson, onClose }) {
           </>
         }
       />
-    </Sheet>
+    </div>
   );
 }

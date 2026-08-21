@@ -1,12 +1,14 @@
 import { Toolbar, ToolbarPane, Link } from "konsta/react";
-import { LayoutDashboard, CalendarDays, UserSearch, Cog } from "lucide-react";
+import { MdDashboard } from "react-icons/md";
+import { FaCalendarAlt, FaCog } from "react-icons/fa";
+import { BsFillPeopleFill } from "react-icons/bs";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const tabs = [
-  { path: "/dashboard", icon: LayoutDashboard, label: "대시보드" },
-  { path: "/lesson", icon: CalendarDays, label: "강습" },
-  { path: "/student", icon: UserSearch, label: "수강생" },
-  { path: "/setting", icon: Cog, label: "설정" },
+  { path: "/dashboard", icon: MdDashboard, label: "대시보드" },
+  { path: "/lesson", icon: FaCalendarAlt, label: "강습" },
+  { path: "/student", icon: BsFillPeopleFill, label: "수강생" },
+  { path: "/setting", icon: FaCog, label: "설정" },
 ];
 
 const BottomNav = () => {
@@ -29,9 +31,9 @@ const BottomNav = () => {
           <Link
             key={path}
             className={`relative z-10 flex-1 font-bold transition-colors duration-300 ${pathname.includes(path) ? "text-[#fff]" : "text-gray-400"}`}
-            onClick={() => navigate(path)}
+            onClick={() => navigate(path, { replace: true })}
           >
-            <Icon />
+            <Icon size={20} />
           </Link>
         ))}
       </ToolbarPane>

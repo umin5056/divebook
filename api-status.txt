@@ -34,7 +34,7 @@ DELETE /api/students/{id}     미구현
 ===========================================
 수업-수강생 배정 (/api/enrollments)
 ===========================================
-PATCH  /api/enrollments/{enrollmentId}/payment-status   완료
+PATCH  /api/enrollments/{enrollmentId}/paymentStatus   완료
 POST   /api/lessons/{id}/enrollments (수강생 배정)        미구현
 DELETE /api/lessons/{id}/enrollments/{studentId} (배정 취소) 미구현
 

@@ -4,7 +4,7 @@ import { ClearableInput, ClearableTextarea } from "../ClearableInput";
 const STATUS_OPTIONS = [
   {
     value: "open",
-    label: "진행",
+    label: "모집",
     color: "text-white border-blue-500 bg-blue-500",
   },
   {
@@ -26,20 +26,25 @@ export default function LessonFormFields({
   showToast,
   isFull = false,
 }) {
-  const { title: titleRef, location: locationRef, fee: feeRef, maxStudents: maxStudentsRef, content: contentRef } = refs;
-  const handleChange =
-    (field) => (e) => {
-      const isNumberField = ["fee", "maxStudents"].includes(field);
-      const value = e.target.value;
-      if (value !== "" && isNumberField) {
-        setForm((prev) => ({
-          ...prev,
-          [field]: Number(value.replace(/,/g, "")).toLocaleString(),
-        }));
-      } else {
-        setForm((prev) => ({ ...prev, [field]: value }));
-      }
-    };
+  const {
+    title: titleRef,
+    location: locationRef,
+    fee: feeRef,
+    maxStudents: maxStudentsRef,
+    content: contentRef,
+  } = refs;
+  const handleChange = (field) => (e) => {
+    const isNumberField = ["fee", "maxStudents"].includes(field);
+    const value = e.target.value;
+    if (value !== "" && isNumberField) {
+      setForm((prev) => ({
+        ...prev,
+        [field]: Number(value.replace(/,/g, "")).toLocaleString(),
+      }));
+    } else {
+      setForm((prev) => ({ ...prev, [field]: value }));
+    }
+  };
 
   return (
     <div className="divide-y divide-gray-100">
@@ -67,7 +72,7 @@ export default function LessonFormFields({
                 key={value}
                 onClick={() => {
                   if (blocked) {
-                    showToast("인원이 마감되어 진행으로 변경할 수 없습니다.");
+                    showToast("인원이 마감되어 모집으로 변경할 수 없습니다.");
                     return;
                   }
                   setForm((p) => ({ ...p, status: value }));

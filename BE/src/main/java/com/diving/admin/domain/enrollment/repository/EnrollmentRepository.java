@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     List<Enrollment> findByLessonId(Long lessonId);
+
+    List<Enrollment> findByLessonIdInAndIsApproval(List<Long> lessonIds, Boolean isApproval);
 }

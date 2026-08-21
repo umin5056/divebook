@@ -1,8 +1,8 @@
-import { Searchbar } from "konsta/react";
 import { useState } from "react";
-import { useStudents } from "../../hooks/useStudents";
-import StudentCard from "../../components/student/StudentCard";
-import StudentDetailSheet from "../../components/student/StudentDetailSheet";
+import { Searchbar } from "konsta/react";
+import { useStudents } from "../hooks/useStudents";
+import StudentCard from "../components/student/StudentCard";
+import StudentDetailSheet from "../components/student/StudentDetailSheet";
 
 export default function StudentPage() {
   const [searchQuery, setSearchQuery] = useState("");

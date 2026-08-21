@@ -1,93 +1,42 @@
-import { useRef, useState } from "react";
-import { Card } from "konsta/react";
-import { MapPin, Clock } from "lucide-react";
+import { MdWatchLater } from "react-icons/md";
+import { FaMapLocationDot } from "react-icons/fa6";
+import ProgressBar from "../ProgressBar";
 
 const STATUS_LABEL = {
-  open: { label: "진행", color: "bg-blue-500" },
+  open: { label: "모집", color: "bg-blue-500" },
   closed: { label: "마감", color: "bg-red-500" },
   cancelled: { label: "취소", color: "bg-gray-400" },
 };
 
-const CANCEL_BUTTON_WIDTH = 80;
-
-export default function LessonCard({
-  lesson,
-  onCancel,
-  onPress,
-}) {
-  const statusStyle = STATUS_LABEL[lesson.status];
-  const [offsetX, setOffsetX] = useState(0);
-  const startXRef = useRef(null);
-
-  const handleTouchStart = (e) => {
-    startXRef.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e) => {
-    if (startXRef.current === null) return;
-    const delta = e.touches[0].clientX - startXRef.current;
-    const clamped = Math.min(0, Math.max(-(CANCEL_BUTTON_WIDTH + 10), delta));
-    setOffsetX(clamped);
-  };
-
-  const handleTouchEnd = () => {
-    if (offsetX < -CANCEL_BUTTON_WIDTH / 2) {
-      setOffsetX(-(CANCEL_BUTTON_WIDTH + 10));
-    } else {
-      setOffsetX(0);
-    }
-    startXRef.current = null;
-  };
-
+export default function LessonCard({ ...props }) {
   return (
-    <div className="relative">
-      <div
-        className="absolute right-4 top-2 bottom-2 flex items-center justify-center bg-gray-500 rounded-3xl"
-        style={{ width: CANCEL_BUTTON_WIDTH }}
-        onClick={() => {
-          setOffsetX(0);
-          onCancel(lesson);
-        }}
-      >
-        <span className="text-white text-lg font-bold">취 소</span>
+    <div className="w-full shrink-0 p-3 rounded-xl border border-gray-400 bg-white snap-center">
+      <div className="flex justify-between mb-2">
+        <div
+          className={`${STATUS_LABEL[props.status].color} rounded-xl px-2 py-1 text-white text-xs`}
+        >
+          {STATUS_LABEL[props.status].label}
+        </div>
+        <div className="flex gap-3 items-center text-gray-500 font-bold">
+          {props.lessonDate}
+        </div>
       </div>
-
-      <div
-        className="relative transition-transform"
-        style={{ transform: `translateX(${offsetX}px)` }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onClick={() => offsetX === 0 && onPress(lesson)}
-      >
-        <Card>
-          <div className="flex items-start justify-between gap-2">
-            <div className="text-xl font-bold text-gray-900">
-              {lesson.title}
-            </div>
-            <span
-              className={`shrink-0 rounded-full px-3 py-0.5 text-lg font-bold text-white ${statusStyle.color}`}
-            >
-              {statusStyle.label}
-            </span>
-          </div>
-          <div className="mt-2 flex items-center gap-1 font-bold text-sm text-gray-500">
-            <Clock size={14} />
-            <span>{lesson.lessonDate}</span>
-            <span className="mx-1 text-gray-300">|</span>
-            <span>
-              {lesson.startTime} - {lesson.endTime}
-            </span>
-          </div>
-          <div className="mt-1 flex items-center gap-2 font-bold text-base text-gray-500">
-            <MapPin size={14} className="shrink-0" />
-            <span className="flex-1 min-w-0">{lesson.location}</span>
-            <span className="shrink-0">
-              인원: {lesson.enrollmentCount}/{lesson.maxStudents}
-            </span>
-          </div>
-        </Card>
+      <div className="flex flex-col gap-1 font-bold ">
+        <div className="text-xl">{props.title}</div>
+        <div className="flex items-center gap-2 text-gray-500">
+          <MdWatchLater />
+          {`${props.startTime} - ${props.endTime}`}
+        </div>
+        <div className="flex items-center gap-2 text-gray-500">
+          <FaMapLocationDot />
+          {props.location}
+        </div>
       </div>
+      <ProgressBar
+        current={props.enrollmentCount}
+        max={props.maxStudents}
+        unit="명"
+      />
     </div>
   );
 }
