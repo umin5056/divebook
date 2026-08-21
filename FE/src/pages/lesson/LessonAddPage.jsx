@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Link,
-  Sheet,
   Toolbar,
   ToolbarPane,
   Button,
@@ -10,7 +10,7 @@ import {
   DialogButton,
 } from "konsta/react";
 import { X } from "lucide-react";
-import LessonFormFields from "./LessonFormFields";
+import LessonFormFields from "../../components/lesson/LessonFormFields";
 import { useCreateLesson } from "../../hooks/useCreateLesson";
 
 function getDefaults() {
@@ -24,7 +24,8 @@ function getDefaults() {
   };
 }
 
-export default function LessonAddSheet({ opened, onClose }) {
+export default function LessonAddPage() {
+  const navigate = useNavigate();
   const createLesson = useCreateLesson();
   const refs = {
     title: useRef(null),
@@ -55,29 +56,23 @@ export default function LessonAddSheet({ opened, onClose }) {
     setTimeout(() => setToast(""), 2000);
   };
 
-  const reset = () => {
-    setForm({
-      title: "",
-      location: "",
-      lessonDate: defaults.date,
-      startTime: defaults.startTime,
-      endTime: defaults.endTime,
-      fee: 0,
-      maxStudents: 0,
-      content: "",
-      status: "open",
-    });
-  };
-
   const handleClose = () => {
-    reset();
-    onClose();
+    navigate(-1);
   };
 
   const handleSubmit = async () => {
-    if (!form.title) { showToast("제목을 입력하세요."); return; }
-    if (!form.location) { showToast("장소를 입력하세요."); return; }
-    if (form.startTime > form.endTime) { showToast("종료 시간이 시작 시간보다 이릅니다."); return; }
+    if (!form.title) {
+      showToast("제목을 입력하세요.");
+      return;
+    }
+    if (!form.location) {
+      showToast("장소를 입력하세요.");
+      return;
+    }
+    if (form.startTime > form.endTime) {
+      showToast("종료 시간이 시작 시간보다 이릅니다.");
+      return;
+    }
 
     await createLesson.mutateAsync({
       ...form,
@@ -88,11 +83,7 @@ export default function LessonAddSheet({ opened, onClose }) {
   };
 
   return (
-    <Sheet
-      className="max-w-145 mx-auto pb-5"
-      opened={opened}
-      onBackdropClick={() => setConfirmOpened(true)}
-    >
+    <div className="max-w-145 mx-auto pb-5">
       <div className="flex flex-col max-h-[95svh]">
         <Toolbar top className="justify-end ios:pt-4 max-w-145 mx-auto z-10">
           <ToolbarPane />
@@ -143,6 +134,6 @@ export default function LessonAddSheet({ opened, onClose }) {
           </>
         }
       />
-    </Sheet>
+    </div>
   );
 }

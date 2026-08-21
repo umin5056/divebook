@@ -49,9 +49,7 @@ public class AuthService {
 
     @Transactional
     public LoginResponse signup(String name, String email, String password, String code) {
-        if (!emailVerificationService.verifyCode(email, code)) {
-            throw new IllegalArgumentException("인증 코드가 올바르지 않거나 만료되었습니다.");
-        }
+        verifyEmailCodeOrThrow(email, code);
 
         if (password == null || password.length() < 8) {
             throw new IllegalArgumentException("비밀번호는 8자리 이상이어야 합니다.");
@@ -69,14 +67,18 @@ public class AuthService {
     }
 
     public LoginResponse loginWithCode(String email, String code) {
-        if (!emailVerificationService.verifyCode(email, code)) {
-            throw new IllegalArgumentException("인증 코드가 올바르지 않거나 만료되었습니다.");
-        }
+        verifyEmailCodeOrThrow(email, code);
 
         Instructor instructor = instructorRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 강사입니다."));
 
         return issueTokens(instructor.getInstructorId());
+    }
+
+    private void verifyEmailCodeOrThrow(String email, String code) {
+        if (!emailVerificationService.verifyCode(email, code)) {
+            throw new IllegalArgumentException("인증 코드가 올바르지 않거나 만료되었습니다.");
+        }
     }
 
     @Transactional

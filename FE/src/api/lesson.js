@@ -18,6 +18,10 @@ export function getLessons() {
   return client.get("/api/lessons");
 }
 
+export function getLessonsByDate(date) {
+  return client.get("/api/lessons", { params: { date } });
+}
+
 export function createLesson(data) {
   return client.post("/api/lessons", data);
 }
@@ -31,7 +35,7 @@ export function getLessonEnrollments(lessonId) {
 }
 
 export function updatePaymentStatus(enrollmentId, paymentStatus) {
-  return client.patch(`/api/enrollments/${enrollmentId}/payment-status`, {
+  return client.patch(`/api/enrollments/${enrollmentId}/paymentStatus`, {
     paymentStatus,
   });
 }

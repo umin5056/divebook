@@ -6,6 +6,7 @@ import AuthLayout from "../../components/auth/AuthLayout";
 import AuthInput from "../../components/auth/AuthInput";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import AuthFooterLink from "../../components/auth/AuthFooterLink";
+import AuthBackButton from "../../components/auth/AuthBackButton";
 import usePasswordConfirm, {
   MIN_PASSWORD_LENGTH,
 } from "../../hooks/usePasswordConfirm";
@@ -171,17 +172,7 @@ export default function FindPasswordPage() {
           <AuthSubmitButton>비밀번호 변경</AuthSubmitButton>
         </form>
       )}
-      {step !== "email" ? (
-        <button
-          type="button"
-          className="w-full border rounded-lg py-1 font-bold text-gray-500"
-          onClick={handleGoBack}
-        >
-          이전
-        </button>
-      ) : (
-        ""
-      )}
+      <AuthBackButton visible={step !== "email"} onClick={handleGoBack} />
       {error && <span className="text-xs font-bold text-red-700">{error}</span>}
 
       <AuthFooterLink

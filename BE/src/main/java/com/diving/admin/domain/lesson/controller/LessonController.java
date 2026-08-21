@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,9 +24,10 @@ public class LessonController {
 
     @GetMapping
     public ResponseEntity<List<LessonResponse>> getList(
-            @AuthenticationPrincipal Long instructorId
+            @AuthenticationPrincipal Long instructorId,
+            @RequestParam(required = false) LocalDate date
     ) {
-        return ResponseEntity.ok(lessonService.getList(instructorId));
+        return ResponseEntity.ok(lessonService.getList(instructorId, date));
     }
 
     @PostMapping

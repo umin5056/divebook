@@ -6,6 +6,9 @@ import AuthLayout from "../../components/auth/AuthLayout";
 import AuthInput from "../../components/auth/AuthInput";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import AuthFooterLink from "../../components/auth/AuthFooterLink";
+import AuthBackButton from "../../components/auth/AuthBackButton";
+import PolicyModal from "../../components/auth/PolicyModal";
+import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "./policyText";
 import usePasswordConfirm, {
   MIN_PASSWORD_LENGTH,
 } from "../../hooks/usePasswordConfirm";
@@ -18,6 +21,8 @@ export default function SignupPage() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [policyChecked, setPolicyChecked] = useState(false);
+  const [termsOpened, setTermsOpened] = useState(false);
+  const [privacyOpened, setPrivacyOpened] = useState(false);
   const {
     password,
     passwordConfirm,
@@ -197,22 +202,26 @@ export default function SignupPage() {
               checked={policyChecked}
               onChange={handlePolicyCheck}
             />
-            <span className="text-[#008080]">이용약관</span>및
-            <span className="text-[#008080]">개인정보 처리방침</span>에
+            <span
+              className="text-[#008080] cursor-pointer"
+              onClick={() => setTermsOpened(true)}
+            >
+              이용약관
+            </span>
+            및
+            <span
+              className="text-[#008080] cursor-pointer"
+              onClick={() => setPrivacyOpened(true)}
+            >
+              개인정보 처리방침
+            </span>
+            에
             동의합니다.
           </label>
           <AuthSubmitButton>회원가입 완료</AuthSubmitButton>
         </form>
       )}
-      {step !== "info" && (
-        <button
-          type="button"
-          className="w-full border rounded-lg py-1 font-bold text-gray-500"
-          onClick={handleGoBack}
-        >
-          이전
-        </button>
-      )}
+      <AuthBackButton visible={step !== "info"} onClick={handleGoBack} />
       {error && <span className="text-xs font-bold text-red-700">{error}</span>}
 
       <AuthFooterLink
@@ -220,6 +229,21 @@ export default function SignupPage() {
         linkText="로그인"
         onClick={() => navigate("/")}
       />
+
+      <PolicyModal
+        opened={termsOpened}
+        onClose={() => setTermsOpened(false)}
+        title="이용약관"
+      >
+        {TERMS_OF_SERVICE}
+      </PolicyModal>
+      <PolicyModal
+        opened={privacyOpened}
+        onClose={() => setPrivacyOpened(false)}
+        title="개인정보 처리방침"
+      >
+        {PRIVACY_POLICY}
+      </PolicyModal>
     </AuthLayout>
   );
 }

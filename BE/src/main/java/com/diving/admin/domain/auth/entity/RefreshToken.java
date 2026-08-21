@@ -3,6 +3,7 @@ package com.diving.admin.domain.auth.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +29,7 @@ public class RefreshToken {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @NonNull
     public static RefreshToken create(Long instructorId, String token, LocalDateTime expiresAt) {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.instructorId = instructorId;

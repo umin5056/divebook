@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -23,9 +24,12 @@ public class LessonService {
     private final EnrollmentRepository enrollmentRepository;
     private final StudentRepository studentRepository;
 
-    public List<LessonResponse> getList(Long instructorId) {
-        return lessonRepository.findByInstructorIdOrderByLessonDateDesc(instructorId)
-                .stream().map(LessonResponse::from).toList();
+    public List<LessonResponse> getList(Long instructorId, LocalDate date) {
+        List<Lesson> lessons = date == null
+                ? lessonRepository.findByInstructorIdOrderByLessonDateDesc(instructorId)
+                : lessonRepository.findByInstructorIdAndLessonDateOrderByLessonDateDesc(instructorId, date);
+
+        return lessons.stream().map(LessonResponse::from).toList();
     }
 
     public Long create(Long instructorId, CreateLessonRequest request) {
@@ -41,9 +45,12 @@ public class LessonService {
     }
 
     public List<EnrollmentResponse> getEnrollments(Long lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
+
         return enrollmentRepository.findByLessonId(lessonId).stream()
                 .map(e -> studentRepository.findById(e.getStudentId())
-                        .map(s -> EnrollmentResponse.of(e, s))
+                        .map(s -> EnrollmentResponse.of(e, s, lesson))
                         .orElse(null))
                 .filter(e -> e != null)
                 .toList();
