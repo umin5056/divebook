@@ -1,5 +1,6 @@
 import FormRow from "../FormRow";
 import { ClearableInput, ClearableTextarea } from "../ClearableInput";
+import { showToast } from "../../hooks/useToastStore";
 
 const STATUS_OPTIONS = [
   {
@@ -23,7 +24,6 @@ export default function LessonFormFields({
   form,
   setForm,
   refs,
-  showToast,
   isFull = false,
 }) {
   const {

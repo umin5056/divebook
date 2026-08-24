@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLessons } from "../hooks/useLessons";
+import { useLessons } from "../../hooks/useLessons";
 import { Fab, Popover, List, ListItem, Link } from "konsta/react";
 import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
-import LessonCard from "../components/lesson/LessonCard";
+import LessonCard from "../../components/lesson/LessonCard";
 
 const STATUS_OPTIONS = [
   { label: "전체", value: "all" },
@@ -55,14 +55,14 @@ export default function LessonPage() {
     setSelectedDate(null);
   };
 
-  const filteredLessons = lessons?.filter(
+  const filteredLessons = lessons.filter(
     (lesson) =>
       (statusOption.value === "all" || lesson.status === statusOption.value) &&
       (!selectedDate || lesson.lessonDate === selectedDate),
   );
 
   return (
-    <div className="flex flex-col gap-4  px-4">
+    <div className="flex flex-col h-full gap-4  px-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-center gap-4 shrink-0">
           <ChevronLeft
@@ -95,7 +95,8 @@ export default function LessonPage() {
         ) : (
           dates.map((date) => {
             const isSelected = date === selectedDate;
-            const day = new Date(date).getDay();
+            const [year, month, day] = date.split("-").map(Number);
+            const weekday = new Date(year, month - 1, day).getDay();
 
             return (
               <div
@@ -109,21 +110,21 @@ export default function LessonPage() {
                 }`}
                 style={{ width: `${100 / 7}%` }}
               >
-                <div className="">{WEEKDAY_LABEL[day]}</div>
-                <div className="text-lg">{Number(date.slice(-2))}</div>
+                <div className="">{WEEKDAY_LABEL[weekday]}</div>
+                <div className="text-lg">{day}</div>
               </div>
             );
           })
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col flex-1 gap-2">
         {filteredLessons.length === 0 ? (
-          <div className="text-center font-bold text-2xl text-gray-500">
+          <div className="flex justify-center items-center mt-10 font-bold text-2xl text-gray-500">
             조회된 결과가 없습니다.
           </div>
         ) : (
-          filteredLessons?.map((lesson) => (
+          filteredLessons.map((lesson) => (
             <div
               key={lesson.lessonId}
               onClick={() => navigate(`/lesson/${lesson.lessonId}`)}

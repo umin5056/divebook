@@ -48,7 +48,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
 
-        return enrollmentRepository.findByLessonId(lessonId).stream()
+        return enrollmentRepository.findByLessonIdOrderByRequestedAtAsc(lessonId).stream()
                 .map(e -> studentRepository.findById(e.getStudentId())
                         .map(s -> EnrollmentResponse.of(e, s, lesson))
                         .orElse(null))

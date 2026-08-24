@@ -8,7 +8,7 @@ import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import AuthFooterLink from "../../components/auth/AuthFooterLink";
 import AuthBackButton from "../../components/auth/AuthBackButton";
 import PolicyModal from "../../components/auth/PolicyModal";
-import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "./policyText";
+import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../../constants/policyText";
 import usePasswordConfirm, {
   MIN_PASSWORD_LENGTH,
 } from "../../hooks/usePasswordConfirm";
@@ -98,15 +98,13 @@ export default function SignupPage() {
     }
 
     try {
-      const { data } = await signup({
+      await signup({
         name,
         email: email.trim(),
         password,
         code: code.trim(),
       });
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      navigate("/lesson", { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.response?.data ?? "회원가입에 실패했습니다.");
     }
@@ -215,8 +213,7 @@ export default function SignupPage() {
             >
               개인정보 처리방침
             </span>
-            에
-            동의합니다.
+            에 동의합니다.
           </label>
           <AuthSubmitButton>회원가입 완료</AuthSubmitButton>
         </form>
