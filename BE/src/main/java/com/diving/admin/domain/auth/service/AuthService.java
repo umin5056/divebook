@@ -48,7 +48,7 @@ public class AuthService {
     }
 
     @Transactional
-    public LoginResponse signup(String name, String email, String password, String code) {
+    public void signup(String name, String email, String password, String code) {
         verifyEmailCodeOrThrow(email, code);
 
         if (password == null || password.length() < 8) {
@@ -62,8 +62,6 @@ public class AuthService {
         Instructor instructor = Instructor.create(email, name, null);
         instructor.changePassword(passwordEncoder.encode(password));
         instructorRepository.save(instructor);
-
-        return issueTokens(instructor.getInstructorId());
     }
 
     public LoginResponse loginWithCode(String email, String code) {

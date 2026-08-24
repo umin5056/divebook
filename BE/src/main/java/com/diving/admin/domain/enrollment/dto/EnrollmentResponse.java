@@ -8,6 +8,7 @@ import com.diving.admin.domain.student.entity.Student;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public record EnrollmentResponse(
@@ -15,7 +16,10 @@ public record EnrollmentResponse(
         Long studentId,
         String name,
         String phone,
+        String email,
+        String content,
         PaymentStatus paymentStatus,
+        LocalDateTime requestedAt,
         Long lessonId,
         String lessonTitle,
         String lessonLocation,
@@ -30,7 +34,10 @@ public record EnrollmentResponse(
                 student.getStudentId(),
                 student.getName(),
                 student.getPhone(),
+                student.getEmail(),
+                student.getContent(),
                 enrollment.getPaymentStatus(),
+                enrollment.getRequestedAt(),
                 lesson.getLessonId(),
                 lesson.getTitle(),
                 lesson.getLocation(),

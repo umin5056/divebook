@@ -5,13 +5,13 @@ import {
   Toolbar,
   ToolbarPane,
   Button,
-  Toast,
   Dialog,
   DialogButton,
 } from "konsta/react";
-import { X } from "lucide-react";
+import { FaArrowLeft } from "react-icons/fa";
 import LessonFormFields from "../../components/lesson/LessonFormFields";
 import { useCreateLesson } from "../../hooks/useCreateLesson";
+import { showToast } from "../../hooks/useToastStore";
 
 function getDefaults() {
   const now = new Date();
@@ -35,26 +35,22 @@ export default function LessonAddPage() {
     content: useRef(null),
   };
 
-  const [toast, setToast] = useState("");
   const [confirmOpened, setConfirmOpened] = useState(false);
 
-  const defaults = getDefaults();
-  const [form, setForm] = useState({
-    title: "",
-    location: "",
-    lessonDate: defaults.date,
-    startTime: defaults.startTime,
-    endTime: defaults.endTime,
-    fee: 0,
-    maxStudents: 1,
-    content: "",
-    status: "open",
+  const [form, setForm] = useState(() => {
+    const defaults = getDefaults();
+    return {
+      title: "",
+      location: "",
+      lessonDate: defaults.date,
+      startTime: defaults.startTime,
+      endTime: defaults.endTime,
+      fee: 0,
+      maxStudents: 1,
+      content: "",
+      status: "open",
+    };
   });
-
-  const showToast = (message) => {
-    setToast(message);
-    setTimeout(() => setToast(""), 2000);
-  };
 
   const handleClose = () => {
     navigate(-1);
@@ -74,45 +70,42 @@ export default function LessonAddPage() {
       return;
     }
 
-    await createLesson.mutateAsync({
-      ...form,
-      maxStudents: Number(String(form.maxStudents).replace(/,/g, "")),
-      fee: Number(String(form.fee).replace(/,/g, "")),
-    });
-    handleClose();
+    try {
+      await createLesson.mutateAsync({
+        ...form,
+        maxStudents: Number(String(form.maxStudents).replace(/,/g, "")),
+        fee: Number(String(form.fee).replace(/,/g, "")),
+      });
+      handleClose();
+    } catch {
+      showToast("강습 추가에 실패했습니다.");
+    }
   };
 
   return (
     <div className="max-w-145 mx-auto pb-5">
-      <div className="flex flex-col max-h-[95svh]">
+      <div className="flex flex-col h-[95svh]">
         <Toolbar top className="justify-end ios:pt-4 max-w-145 mx-auto z-10">
-          <ToolbarPane />
           <ToolbarPane>
             <Link iconOnly onClick={() => setConfirmOpened(true)}>
-              <X />
+              <FaArrowLeft />
             </Link>
           </ToolbarPane>
+          <ToolbarPane />
         </Toolbar>
 
-        <div className="flex-1 min-h-0 mb-8 px-8 overflow-auto">
-          <LessonFormFields
-            form={form}
-            setForm={setForm}
-            refs={refs}
-            showToast={showToast}
-          />
+        <div className="flex-1 min-h-0 overflow-auto">
+          <div className="px-8 mb-8">
+            <LessonFormFields form={form} setForm={setForm} refs={refs} />
+          </div>
+        </div>
+
+        <div className="px-10">
+          <Button large rounded onClick={handleSubmit}>
+            추가
+          </Button>
         </div>
       </div>
-
-      <div className="px-10">
-        <Button large rounded onClick={handleSubmit}>
-          추가
-        </Button>
-      </div>
-
-      <Toast opened={!!toast} position="center">
-        <div className="shrink">{toast}</div>
-      </Toast>
 
       <Dialog
         opened={confirmOpened}

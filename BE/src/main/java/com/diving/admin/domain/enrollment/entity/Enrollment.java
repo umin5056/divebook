@@ -36,6 +36,7 @@ public class Enrollment {
 
     public void updatePaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
+        this.isApproval = paymentStatus != PaymentStatus.pending;
         this.modifiedAt = java.time.LocalDateTime.now();
     }
 

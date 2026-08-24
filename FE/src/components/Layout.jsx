@@ -54,8 +54,11 @@ export function Layout() {
 }
 
 function ApprovalPanel({ approvals, opened, onClose }) {
-  const handleMoveToApproval = () => {
-    alert("강습 상세 페이지로 이동해야 합니다.");
+  const navigate = useNavigate();
+
+  const handleMoveToApproval = (lessonId) => {
+    onClose();
+    navigate(`/lesson/${lessonId}`, { state: { activeTab: "students" } });
   };
 
   return (
@@ -82,7 +85,7 @@ function ApprovalPanel({ approvals, opened, onClose }) {
             <div
               key={a.enrollmentId}
               className="flex gap-3 px-3 py-2"
-              onClick={handleMoveToApproval}
+              onClick={() => handleMoveToApproval(a.lessonId)}
             >
               <div>
                 <div className="rounded-full bg-blue-600 p-2">

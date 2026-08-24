@@ -6,8 +6,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const tabs = [
   { path: "/dashboard", icon: MdDashboard, label: "대시보드" },
-  { path: "/lesson", icon: FaCalendarAlt, label: "강습" },
-  { path: "/student", icon: BsFillPeopleFill, label: "수강생" },
+  { path: "/lessons", icon: FaCalendarAlt, label: "강습" },
+  { path: "/students", icon: BsFillPeopleFill, label: "수강생" },
   { path: "/setting", icon: FaCog, label: "설정" },
 ];
 
