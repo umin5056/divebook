@@ -40,8 +40,4 @@ public class Enrollment {
         this.modifiedAt = java.time.LocalDateTime.now();
     }
 
-    public void updateIsApproval(Boolean isApproval) {
-        this.isApproval = isApproval;
-        this.modifiedAt = java.time.LocalDateTime.now();
-    }
 }

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toast } from "konsta/react";
 import { Layout } from "./components/Layout";
-import { useToastStore } from "./hooks/useToastStore";
+import { useToastStore } from "./store/useToastStore";
 import LoginPage from "./pages/auth/LoginPage";
 import FindPasswordPage from "./pages/auth/FindPasswordPage";
 import SignupPage from "./pages/auth/SignupPage";
@@ -13,7 +13,7 @@ import StudentPage from "./pages/StudentPage";
 import SettingPage from "./pages/SettingPage";
 
 export default function App() {
-  const toastMessage = useToastStore((state) => state.message);
+  const { message } = useToastStore();
 
   return (
     <BrowserRouter>
@@ -31,8 +31,8 @@ export default function App() {
           <Route path="/setting" element={<SettingPage />} />
         </Route>
       </Routes>
-      <Toast opened={!!toastMessage} position="center">
-        <div className="shrink">{toastMessage}</div>
+      <Toast opened={!!message} position="center">
+        <div className="shrink">{message}</div>
       </Toast>
     </BrowserRouter>
   );

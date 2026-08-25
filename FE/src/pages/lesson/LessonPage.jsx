@@ -4,6 +4,7 @@ import { useLessons } from "../../hooks/useLessons";
 import { Fab, Popover, List, ListItem, Link } from "konsta/react";
 import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import LessonCard from "../../components/lesson/LessonCard";
+import { useLessonFilterStore } from "../../store/useLessonFilterStore";
 
 const STATUS_OPTIONS = [
   { label: "전체", value: "all" },
@@ -18,14 +19,8 @@ export default function LessonPage() {
   const navigate = useNavigate();
   const [statusOption, setStatusOption] = useState(STATUS_OPTIONS[0]);
   const [statusOptionOpened, setStatusOptionOpened] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(() => {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  });
-  const [month, setMonth] = useState(() => {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  });
+  const { month, setMonth, selectedDate, setSelectedDate } =
+    useLessonFilterStore();
   const { data: lessons = [] } = useLessons();
 
   const dates = [
@@ -58,11 +53,12 @@ export default function LessonPage() {
   const filteredLessons = lessons.filter(
     (lesson) =>
       (statusOption.value === "all" || lesson.status === statusOption.value) &&
-      (!selectedDate || lesson.lessonDate === selectedDate),
+      ((!selectedDate && lesson.lessonDate.startsWith(month)) ||
+        lesson.lessonDate === selectedDate),
   );
 
   return (
-    <div className="flex flex-col h-full gap-4  px-4">
+    <div className="flex flex-col h-full gap-4 px-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-center gap-4 shrink-0">
           <ChevronLeft
@@ -118,7 +114,7 @@ export default function LessonPage() {
         )}
       </div>
 
-      <div className="flex flex-col flex-1 gap-2">
+      <div className="flex flex-col flex-1 gap-2 pb-35">
         {filteredLessons.length === 0 ? (
           <div className="flex justify-center items-center mt-10 font-bold text-2xl text-gray-500">
             조회된 결과가 없습니다.

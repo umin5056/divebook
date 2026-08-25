@@ -30,7 +30,7 @@ public class EnrollmentService {
     @Transactional
     public List<EnrollmentResponse> approvalDashboard(Long instructorId) {
         Map<Long, Lesson> lessons = lessonRepository
-                .findByInstructorIdOrderByLessonDateDesc(instructorId)
+                .findByInstructorIdOrderByLessonDate(instructorId)
                 .stream()
                 .collect(Collectors.toMap(Lesson::getLessonId, l -> l));
 
@@ -48,9 +48,13 @@ public class EnrollmentService {
     }
 
     @Transactional
-    public void updatePaymentStatus(Long enrollmentId, PaymentStatus paymentStatus) {
+    public void updatePaymentStatus(Long instructorId, Long enrollmentId, PaymentStatus paymentStatus) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Enrollment not found"));
+
+        lessonRepository.findByLessonIdAndInstructorId(enrollment.getLessonId(), instructorId)
+                .orElseThrow(() -> new IllegalArgumentException("Enrollment not found"));
+
         enrollment.updatePaymentStatus(paymentStatus);
     }
 }

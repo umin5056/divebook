@@ -1,6 +1,6 @@
 import FormRow from "../FormRow";
 import { ClearableInput, ClearableTextarea } from "../ClearableInput";
-import { showToast } from "../../hooks/useToastStore";
+import { showToast } from "../../store/useToastStore";
 
 const STATUS_OPTIONS = [
   {
@@ -20,19 +20,7 @@ const STATUS_OPTIONS = [
   },
 ];
 
-export default function LessonFormFields({
-  form,
-  setForm,
-  refs,
-  isFull = false,
-}) {
-  const {
-    title: titleRef,
-    location: locationRef,
-    fee: feeRef,
-    maxStudents: maxStudentsRef,
-    content: contentRef,
-  } = refs;
+export default function LessonFormFields({ form, setForm, isFull = false }) {
   const handleChange = (field) => (e) => {
     const isNumberField = ["fee", "maxStudents"].includes(field);
     const value = e.target.value;
@@ -50,14 +38,12 @@ export default function LessonFormFields({
     <div className="divide-y divide-gray-100">
       <FormRow label="제목">
         <ClearableInput
-          ref={titleRef}
           type="text"
           value={form.title}
           onChange={handleChange("title")}
           onClear={() => setForm((p) => ({ ...p, title: "" }))}
           maxLength={100}
           enterKeyHint="next"
-          onKeyDown={(e) => e.key === "Enter" && locationRef.current?.focus()}
           className="text-xl text-gray-900"
           placeholder="입력하세요."
         />
@@ -88,7 +74,6 @@ export default function LessonFormFields({
 
       <FormRow label="장소">
         <ClearableInput
-          ref={locationRef}
           type="text"
           value={form.location}
           onChange={handleChange("location")}
@@ -129,14 +114,10 @@ export default function LessonFormFields({
 
       <FormRow label="요금">
         <ClearableInput
-          ref={feeRef}
           type="text"
           value={form.fee}
           onChange={handleChange("fee")}
           onClear={() => setForm((p) => ({ ...p, fee: "" }))}
-          onKeyDown={(e) =>
-            e.key === "Enter" && maxStudentsRef.current?.focus()
-          }
           maxLength={8}
           inputMode="numeric"
           enterKeyHint="done"
@@ -147,7 +128,6 @@ export default function LessonFormFields({
 
       <FormRow label="인원">
         <ClearableInput
-          ref={maxStudentsRef}
           type="text"
           value={form.maxStudents}
           onChange={handleChange("maxStudents")}
@@ -162,17 +142,11 @@ export default function LessonFormFields({
 
       <FormRow label="메모">
         <ClearableTextarea
-          ref={contentRef}
           value={form.content}
           onChange={(e) => setForm((p) => ({ ...p, content: e.target.value }))}
           onClear={() => setForm((p) => ({ ...p, content: "" }))}
-          className="text-xl text-gray-900 resize-none overflow-hidden"
+          className="text-xl text-gray-900 resize-none field-sizing-content p-3 pr-10 "
           rows={1}
-          onInput={(e) => {
-            const el = e.currentTarget;
-            el.style.height = "auto";
-            el.style.height = el.scrollHeight + "px";
-          }}
           placeholder="입력하세요."
         />
       </FormRow>

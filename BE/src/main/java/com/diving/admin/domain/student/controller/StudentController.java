@@ -1,6 +1,7 @@
 package com.diving.admin.domain.student.controller;
 
 import com.diving.admin.domain.student.dto.StudentResponse;
+import com.diving.admin.domain.student.dto.UpdateStudentContentRequest;
 import com.diving.admin.domain.student.service.StudentService;
 
 import java.util.List;
@@ -8,6 +9,9 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,5 +29,15 @@ public class StudentController {
         @AuthenticationPrincipal Long instructorId
     ) {
         return ResponseEntity.ok(studentService.getList(instructorId));
+    }
+
+    @PatchMapping("{studentId}")
+    public ResponseEntity<Void> update(
+        @AuthenticationPrincipal Long instructorId,
+        @PathVariable Long studentId,
+        @RequestBody UpdateStudentContentRequest request
+    ) {
+        studentService.update(instructorId, studentId, request.content());
+        return ResponseEntity.noContent().build();
     }
 }

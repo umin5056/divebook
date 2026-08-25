@@ -19,7 +19,7 @@ public record EnrollmentResponse(
         String email,
         String content,
         PaymentStatus paymentStatus,
-        LocalDateTime requestedAt,
+        @JsonFormat(pattern="yyyy-MM-dd HH:mm", locale="ko") LocalDateTime requestedAt,
         Long lessonId,
         String lessonTitle,
         String lessonLocation,
