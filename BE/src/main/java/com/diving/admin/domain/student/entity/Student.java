@@ -37,4 +37,9 @@ public class Student {
 
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
+
+    public void update(String content) {
+        this.content = content;
+        modifiedAt = LocalDateTime.now();
+    }
 }

@@ -30,6 +30,14 @@ public class LessonController {
         return ResponseEntity.ok(lessonService.getList(instructorId, date));
     }
 
+    @GetMapping("/{lessonId}")
+    public ResponseEntity<LessonResponse> getLesson(
+            @AuthenticationPrincipal Long instructorId,
+            @PathVariable Long lessonId
+    ) {
+        return ResponseEntity.ok(lessonService.getLesson(instructorId, lessonId));
+    }
+
     @PostMapping
     public ResponseEntity<Void> create(
             @AuthenticationPrincipal Long instructorId,
@@ -41,17 +49,19 @@ public class LessonController {
 
     @PutMapping("/{lessonId}")
     public ResponseEntity<Void> update(
+            @AuthenticationPrincipal Long instructorId,
             @PathVariable Long lessonId,
             @RequestBody UpdateLessonRequest request
     ) {
-        lessonService.update(lessonId, request);
+        lessonService.update(instructorId, lessonId, request);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{lessonId}/enrollments")
     public ResponseEntity<List<EnrollmentResponse>> getEnrollments(
+            @AuthenticationPrincipal Long instructorId,
             @PathVariable Long lessonId
     ) {
-        return ResponseEntity.ok(lessonService.getEnrollments(lessonId));
+        return ResponseEntity.ok(lessonService.getEnrollments(instructorId, lessonId));
     }
 }

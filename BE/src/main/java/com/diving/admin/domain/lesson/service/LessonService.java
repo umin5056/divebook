@@ -26,10 +26,17 @@ public class LessonService {
 
     public List<LessonResponse> getList(Long instructorId, LocalDate date) {
         List<Lesson> lessons = date == null
-                ? lessonRepository.findByInstructorIdOrderByLessonDateDesc(instructorId)
-                : lessonRepository.findByInstructorIdAndLessonDateOrderByLessonDateDesc(instructorId, date);
+                ? lessonRepository.findByInstructorIdOrderByLessonDate(instructorId)
+                : lessonRepository.findByInstructorIdAndLessonDateOrderByLessonDate(instructorId, date);
 
         return lessons.stream().map(LessonResponse::from).toList();
+    }
+
+    public LessonResponse getLesson(Long instructorId, Long lessonId) {
+        Lesson lesson = lessonRepository.findByLessonIdAndInstructorId(lessonId, instructorId)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
+
+        return LessonResponse.from(lesson);
     }
 
     public Long create(Long instructorId, CreateLessonRequest request) {
@@ -38,14 +45,14 @@ public class LessonService {
     }
 
     @Transactional
-    public void update(Long lessonId, UpdateLessonRequest request) {
-        Lesson lesson = lessonRepository.findById(lessonId)
+    public void update(Long instructorId, Long lessonId, UpdateLessonRequest request) {
+        Lesson lesson = lessonRepository.findByLessonIdAndInstructorId(lessonId, instructorId)
                 .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
         lesson.update(request);
     }
 
-    public List<EnrollmentResponse> getEnrollments(Long lessonId) {
-        Lesson lesson = lessonRepository.findById(lessonId)
+    public List<EnrollmentResponse> getEnrollments(Long instructorId, Long lessonId) {
+        Lesson lesson = lessonRepository.findByLessonIdAndInstructorId(lessonId, instructorId)
                 .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
 
         return enrollmentRepository.findByLessonIdOrderByRequestedAtAsc(lessonId).stream()

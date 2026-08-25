@@ -71,7 +71,7 @@ function ApprovalPanel({ approvals, opened, onClose }) {
       <div className="h-full flex flex-col justify-between">
         <Toolbar top className="bg-gray-100 justify-center items-center p-4">
           <div className="flex items-center text-2xl font-semibold">
-            입금 확인 신청
+            입금 확인 신청 ({approvals.length})
           </div>
           <ToolbarPane className="p-3">
             <X onClick={onClose} />

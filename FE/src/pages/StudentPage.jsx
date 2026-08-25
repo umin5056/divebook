@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { Searchbar } from "konsta/react";
-import { useStudents } from "../hooks/useStudents";
 import StudentCard from "../components/student/StudentCard";
 import StudentDetailSheet from "../components/student/StudentDetailSheet";
+import { useStudents } from "../hooks/useStudents";
 
 export default function StudentPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const { data: students } = useStudents();
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const { data: students = [] } = useStudents();
+
+  const selectedStudent = students.find(
+    (e) => e.studentId === selectedStudentId,
+  );
 
   const filteredStudents = students?.filter((student) =>
     student.name.includes(searchQuery),
@@ -15,7 +19,7 @@ export default function StudentPage() {
 
   return (
     <>
-      <div className="mx-4">
+      <div className="m-4">
         <Searchbar
           onInput={(e) => setSearchQuery(e.target.value)}
           value={searchQuery}
@@ -23,17 +27,19 @@ export default function StudentPage() {
         />
       </div>
 
-      {filteredStudents?.map((student) => (
-        <StudentCard
-          key={student.studentId}
-          student={student}
-          onPress={setSelectedStudent}
-        />
-      ))}
+      <div className="flex flex-col gap-2 px-4 pb-4">
+        {filteredStudents?.map((e) => (
+          <StudentCard
+            key={e.studentId}
+            student={e}
+            onClick={() => setSelectedStudentId(e.studentId)}
+          />
+        ))}
+      </div>
 
       <StudentDetailSheet
         student={selectedStudent}
-        onClose={() => setSelectedStudent(null)}
+        onClose={() => setSelectedStudentId(null)}
       />
     </>
   );

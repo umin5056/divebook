@@ -11,7 +11,7 @@ import {
 import { FaArrowLeft } from "react-icons/fa";
 import LessonFormFields from "../../components/lesson/LessonFormFields";
 import { useCreateLesson } from "../../hooks/useCreateLesson";
-import { showToast } from "../../hooks/useToastStore";
+import { showToast } from "../../store/useToastStore";
 
 function getDefaults() {
   const now = new Date();
@@ -84,7 +84,7 @@ export default function LessonAddPage() {
 
   return (
     <div className="max-w-145 mx-auto pb-5">
-      <div className="flex flex-col h-[95svh]">
+      <div className="flex flex-col h-[95dvh]">
         <Toolbar top className="justify-end ios:pt-4 max-w-145 mx-auto z-10">
           <ToolbarPane>
             <Link iconOnly onClick={() => setConfirmOpened(true)}>
