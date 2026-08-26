@@ -26,6 +26,14 @@ export function getLessonsByDate(date) {
   return client.get("/api/lessons", { params: { date } });
 }
 
+export function getLessonsDailyTrend() {
+  return client.get("/api/lessons/dailyTrend");
+}
+
+export function getLessonsMonthlyTrend() {
+  return client.get("/api/lessons/monthlyTrend");
+}
+
 export function createLesson(data) {
   return client.post("/api/lessons", data);
 }

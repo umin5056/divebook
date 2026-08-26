@@ -1,5 +1,13 @@
 import { useState } from "react";
 import {
+  useStudentsDailyTrend,
+  useStudentsMonthlyTrend,
+} from "../../hooks/useStudentsTrend";
+import {
+  useLessonsDailyTrend,
+  useLessonsMonthlyTrend,
+} from "../../hooks/useLessonsTrend";
+import {
   ResponsiveContainer,
   LineChart,
   Line,
@@ -10,35 +18,32 @@ import {
   Legend,
 } from "recharts";
 
-// TODO: 백엔드 통계 API 연동 전까지의 목업 데이터
-const DAILY_DATA = [
-  { label: "08-15", students: 8, lessons: 2 },
-  { label: "08-16", students: 9, lessons: 3 },
-  { label: "08-17", students: 9, lessons: 3 },
-  { label: "08-18", students: 10, lessons: 3 },
-  { label: "08-19", students: 10, lessons: 4 },
-  { label: "08-20", students: 12, lessons: 4 },
-  { label: "08-21", students: 13, lessons: 5 },
-];
-
-const MONTHLY_DATA = [
-  { label: "2026-03", students: 4, lessons: 1 },
-  { label: "2026-04", students: 6, lessons: 2 },
-  { label: "2026-05", students: 7, lessons: 2 },
-  { label: "2026-06", students: 9, lessons: 3 },
-  { label: "2026-07", students: 11, lessons: 4 },
-  { label: "2026-08", students: 13, lessons: 5 },
-];
-
 export default function TrendChart() {
   const [isDaily, setIsDaily] = useState(true);
-  const data = isDaily ? DAILY_DATA : MONTHLY_DATA;
+  const { data: studentDailyTrend } = useStudentsDailyTrend();
+  const { data: lessonsDailyTrend } = useLessonsDailyTrend();
+  const { data: studentMonthlyTrend } = useStudentsMonthlyTrend();
+  const { data: lessonsMonthlyTrend } = useLessonsMonthlyTrend();
+
+  const data = isDaily
+    ? mergeTrendArray(studentDailyTrend, lessonsDailyTrend)
+    : mergeTrendArray(studentMonthlyTrend, lessonsMonthlyTrend);
+
+  function mergeTrendArray(studentTrend, lessonTrend) {
+    let trend = new Array();
+    for (const idx in studentTrend) {
+      const merge = { ...studentTrend[idx], ...lessonTrend[idx] };
+      trend.push(merge);
+    }
+
+    return trend;
+  }
 
   return (
     <div className="flex flex-col  gap-2 p-3 rounded-xl border border-gray-400 bg-white">
       <div className="flex justify-between items-center">
         <div className="font-bold text-xl">
-          {isDaily ? "최근 7일" : "월별"} 증감 추이
+          {isDaily ? "일별" : "월별"} 추이
         </div>
         <div className="flex text-sm font-bold rounded-lg border border-gray-300 overflow-hidden">
           <button

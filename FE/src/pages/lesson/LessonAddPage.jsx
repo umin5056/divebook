@@ -10,7 +10,7 @@ import {
 } from "konsta/react";
 import { FaArrowLeft } from "react-icons/fa";
 import LessonFormFields from "../../components/lesson/LessonFormFields";
-import { useCreateLesson } from "../../hooks/useCreateLesson";
+import { useLessonCreate } from "../../hooks/useLessonCreate";
 import { showToast } from "../../store/useToastStore";
 
 function getDefaults() {
@@ -26,7 +26,7 @@ function getDefaults() {
 
 export default function LessonAddPage() {
   const navigate = useNavigate();
-  const createLesson = useCreateLesson();
+  const createLesson = useLessonCreate();
   const refs = {
     title: useRef(null),
     location: useRef(null),

@@ -5,7 +5,7 @@ import { FaSquarePhone } from "react-icons/fa6";
 import { IoIosMail } from "react-icons/io";
 import { BsChatLeftTextFill } from "react-icons/bs";
 import { ClearableTextarea } from "../ClearableInput";
-import { useUpdateStudent } from "../../hooks/useUpdateStudent";
+import { useStudentUpdate } from "../../hooks/useStudentUpdate";
 import { showToast } from "../../store/useToastStore";
 
 export default function StudentDetailSheet({ student, onClose }) {
@@ -27,7 +27,7 @@ export default function StudentDetailSheet({ student, onClose }) {
 }
 
 function StudentDetailContent({ student, onClose }) {
-  const updateStudent = useUpdateStudent();
+  const updateStudent = useStudentUpdate();
   const [content, setContent] = useState(student.content ?? "");
 
   const handleUpdateContent = () => {

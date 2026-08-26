@@ -18,7 +18,7 @@ import StudentDetailSheet from "../../components/student/StudentDetailSheet";
 import { updatePaymentStatus, updateLessonRequest } from "../../api/lesson";
 import { useLessonById } from "../../hooks/useLessonById";
 import { useLessonEnrollments } from "../../hooks/useLessonEnrollments";
-import { useUpdateLesson } from "../../hooks/useUpdateLesson";
+import { useLessonUpdate } from "../../hooks/useLessonUpdate";
 import { showToast } from "../../store/useToastStore";
 
 const PAYMENT_OPTIONS = [
@@ -110,7 +110,7 @@ function buildForm(lesson) {
 }
 
 function LessonDetailContent({ lesson, initialTab, onClose, onConfirmClose }) {
-  const updateLesson = useUpdateLesson();
+  const updateLesson = useLessonUpdate();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState(initialTab);
   const [form, setForm] = useState(() => buildForm(lesson));

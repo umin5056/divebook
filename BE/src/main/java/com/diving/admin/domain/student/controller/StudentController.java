@@ -1,6 +1,7 @@
 package com.diving.admin.domain.student.controller;
 
 import com.diving.admin.domain.student.dto.StudentResponse;
+import com.diving.admin.domain.student.dto.StudentTrendResponse;
 import com.diving.admin.domain.student.dto.UpdateStudentContentRequest;
 import com.diving.admin.domain.student.service.StudentService;
 
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/students")
@@ -31,7 +34,21 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getList(instructorId));
     }
 
-    @PatchMapping("{studentId}")
+    @GetMapping("/dailyTrend")
+    public ResponseEntity<List<StudentTrendResponse>> getDailyTrend(
+        @AuthenticationPrincipal Long instructorId
+    ) {
+        return ResponseEntity.ok(studentService.getDailyTrend(instructorId));
+    }
+
+    @GetMapping("/monthlyTrend")
+    public ResponseEntity<List<StudentTrendResponse>> getMonthlyTrend(
+        @AuthenticationPrincipal Long instructorId
+    ) {
+        return ResponseEntity.ok(studentService.getMonthlyTrend(instructorId));
+    }
+    
+    @PatchMapping("/{studentId}")
     public ResponseEntity<Void> update(
         @AuthenticationPrincipal Long instructorId,
         @PathVariable Long studentId,

@@ -2,8 +2,11 @@ package com.diving.admin.domain.lesson.service;
 
 import com.diving.admin.domain.lesson.dto.CreateLessonRequest;
 import com.diving.admin.domain.lesson.dto.LessonResponse;
+import com.diving.admin.domain.lesson.dto.LessonTrendResponse;
 import com.diving.admin.domain.lesson.dto.UpdateLessonRequest;
 import com.diving.admin.domain.lesson.entity.Lesson;
+import com.diving.admin.domain.lesson.entity.LessonStatus;
+
 import com.diving.admin.domain.lesson.repository.LessonRepository;
 
 import com.diving.admin.domain.enrollment.repository.EnrollmentRepository;
@@ -14,6 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,6 +44,35 @@ public class LessonService {
                 .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
 
         return LessonResponse.from(lesson);
+    }
+
+    public List<LessonTrendResponse> getDailyTrend(Long instructorId) {
+        List<LessonTrendResponse> trend = new ArrayList<>();
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
+
+        for( int ago = 6; ago >= 0; ago--) {
+            LocalDateTime threshold = now.atTime(23, 59, 59).minusDays(ago);
+            long count = lessonRepository.countByInstructorIdAndStatusNotAndCreatedAtLessThanEqual(instructorId, LessonStatus.cancelled, threshold);
+
+            trend.add(new LessonTrendResponse(threshold.format(formatter), count));
+        }
+        return trend;
+    }
+
+    public List<LessonTrendResponse> getMonthlyTrend(Long instructorId) {
+        List<LessonTrendResponse> trend = new ArrayList<>();
+        YearMonth now = YearMonth.now();
+
+        for( int ago = 6; ago >= 0; ago--) {
+            YearMonth targetMonth = now.minusMonths(ago);
+            LocalDateTime threshold = targetMonth.atEndOfMonth().atTime(23,59,59);
+
+            long count = lessonRepository.countByInstructorIdAndStatusNotAndCreatedAtLessThanEqual(instructorId, LessonStatus.cancelled, threshold);
+
+            trend.add(new LessonTrendResponse(targetMonth.toString(), count));
+        }
+        return trend;
     }
 
     public Long create(Long instructorId, CreateLessonRequest request) {

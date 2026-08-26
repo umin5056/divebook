@@ -6,12 +6,12 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import BottomNav from "./BottomNav";
 import { FaBell } from "react-icons/fa";
 import { X } from "lucide-react";
-import { useApprovalDashboard } from "../hooks/useApprovalDashboard";
+import { useLessonApproval } from "../hooks/useLessonApproval";
 
 export function Layout() {
   const navigate = useNavigate();
   const [approvalOpened, setApprovalOpened] = useState(false);
-  const { data: approvals = [] } = useApprovalDashboard();
+  const { data: approvals = [] } = useLessonApproval();
 
   useEffect(() => {
     if (!localStorage.getItem("accessToken")) {

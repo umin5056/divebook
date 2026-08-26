@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createLesson } from "../api/lesson";
+import { updateStudent } from "../api/student";
 
-export function useCreateLesson() {
+export function useStudentUpdate() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: createLesson,
+    mutationFn: ({ studentId, content }) => updateStudent(studentId, content),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["students"] });
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
     },
   });

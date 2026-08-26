@@ -9,7 +9,7 @@ public record StudentResponse (
   String name,
   String email,
   String content,
-  String deleted
+  Boolean isDeleted
 ) {
   public static StudentResponse from(Student student) {
     return new StudentResponse(
@@ -19,7 +19,7 @@ public record StudentResponse (
       student.getName(),
       student.getEmail(),
       student.getContent(),
-      student.getDeleted()
+      student.getIsDeleted()
     );
   }
 }

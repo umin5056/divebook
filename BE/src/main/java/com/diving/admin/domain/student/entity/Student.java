@@ -29,8 +29,8 @@ public class Student {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column(nullable=false, length=1)
-    private String deleted;
+    @Column(nullable=false)
+    private Boolean isDeleted;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateLesson } from "../api/lesson";
 
-export function useUpdateLesson() {
+export function useLessonUpdate() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ lessonId, data }) => updateLesson(lessonId, data),

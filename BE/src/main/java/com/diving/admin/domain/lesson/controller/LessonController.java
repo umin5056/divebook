@@ -2,6 +2,7 @@ package com.diving.admin.domain.lesson.controller;
 
 import com.diving.admin.domain.lesson.dto.CreateLessonRequest;
 import com.diving.admin.domain.lesson.dto.LessonResponse;
+import com.diving.admin.domain.lesson.dto.LessonTrendResponse;
 import com.diving.admin.domain.lesson.dto.UpdateLessonRequest;
 import com.diving.admin.domain.lesson.service.LessonService;
 
@@ -36,6 +37,20 @@ public class LessonController {
             @PathVariable Long lessonId
     ) {
         return ResponseEntity.ok(lessonService.getLesson(instructorId, lessonId));
+    }
+
+    @GetMapping("/dailyTrend")
+    public ResponseEntity<List<LessonTrendResponse>> getDailyTrend(
+            @AuthenticationPrincipal Long instructorId
+    ) {
+        return ResponseEntity.ok(lessonService.getDailyTrend(instructorId));
+    }
+
+    @GetMapping("/monthlyTrend")
+    public ResponseEntity<List<LessonTrendResponse>> getMonthlyTrend(
+            @AuthenticationPrincipal Long instructorId
+    ) {
+        return ResponseEntity.ok(lessonService.getMonthlyTrend(instructorId));
     }
 
     @PostMapping

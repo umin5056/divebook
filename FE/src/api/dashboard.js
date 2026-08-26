@@ -1,5 +1,5 @@
 import client from "./client";
 
-export function getApprovalDashboard() {
+export function getLessonApprovals() {
   return client.get("/api/enrollments/approvals");
 }
